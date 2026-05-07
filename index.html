@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoV Tags - Vinthrux</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Chakra Petch', sans-serif; background-color: #000; color: #fff; overflow-x: hidden; }
+        .ultra-card { background: #111; border: 1px solid #222; transition: all 0.1s ease; margin-bottom: 12px; -webkit-tap-highlight-color: transparent; }
+        .ultra-card:active { background: #222; border-color: #FE2C55; transform: scale(0.98); }
+        .copied-flash { animation: flash 0.4s ease; }
+        @keyframes flash { 0% { background-color: #222; } 50% { background-color: #FE2C55; } 100% { background-color: #111; } }
+        .nav-professional { background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .nav-item-active::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 20px; height: 3px; background-color: #FE2C55; border-radius: 2px; box-shadow: 0 0 10px rgba(254, 44, 85, 0.7); }
+    </style>
+</head>
+<body class="p-2 flex flex-col items-center min-h-screen relative">
+
+    <div class="w-full max-w-md space-y-4 mb-28">
+        <header class="text-center py-6 border-b border-gray-900 mb-4">
+            <h1 class="text-2xl font-bold tracking-tighter text-white uppercase italic">RoV <span class="text-[#FE2C55]">Tag</span> Deck</h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Tap card to copy tags with clip numbers</p>
+        </header>
+
+        <div id="listContainer" class="grid grid-cols-1"></div>
+    </div>
+
+    <div id="toast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#FE2C55] text-white px-8 py-4 rounded-xl font-bold shadow-2xl transition-all opacity-0 pointer-events-none z-50 text-sm">COPIED! ✅</div>
+
+    <nav class="fixed bottom-0 left-0 right-0 nav-professional p-4 flex justify-around items-center z-40 pb-6 rounded-t-3xl shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
+        <a href="index.html" class="nav-item nav-item-active relative flex flex-col items-center gap-1.5 text-[#FE2C55]">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg>
+            <span class="text-[11px] font-medium uppercase tracking-wider">Tags</span>
+        </a>
+        <a href="mission.html" class="nav-item flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            <span class="text-[11px] font-medium uppercase tracking-wider">Mission</span>
+        </a>
+        <a href="calc.html" class="nav-item flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm6-10V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0v10a2 2 0 002 2h2a2 2 0 002-2v-10a2 2 0 002-2z"></path></svg>
+            <span class="text-[11px] font-medium uppercase tracking-wider">Calc</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        }
+
+        const tagData = [
+            { tag: "#RoV #RoVเป็นเกมตลก #คลิปRoV", view: "6,000" },
+            { tag: "#RoV #คลิปRoV #rovth", view: "6,000" },
+            { tag: "#RoV #RoVเป็นเกมตลก #rovth", view: "8,000" },
+            { tag: "#RoV #RoVเป็นเกมตลก #fpy", view: "8,000" },
+            { tag: "#RoV #rovth #GodlikeCreatorCup #ล่าเงินรางวัล #ไฮไลต์มันส์ๆ", view: "8,000" },
+            { tag: "#RoV #AttackOnTitan #RoVxAOT #การจุติของไททัน #ArcaneBrawl", view: "8,000" },
+            { tag: "#RoV #RoVThailand #RoVเป็นเกมตลก #RoV5v5", view: "8,000" },
+            { tag: "#RoV #rovth #RoVThailand", view: "10,000" },
+            { tag: "#RoV #rovth #fpy", view: "10,000" },
+            { tag: "#RoV #rovth #trending", view: "10,000" },
+            { tag: "#RoV #RoVเป็นเกมตลก #trending", view: "12,000" },
+            { tag: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", view: "12,000" },
+            { tag: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", view: "12,000" },
+            { tag: "#RoV #rovth #เล่นRoV", view: "12,000" },
+            { tag: "#RoV #rovth #คลิปRoV", view: "8,000" },
+            { tag: "#RoV #rovth #GodlikeCreatorCup #Elimination", view: "8,000" }
+        ];
+
+        function render() {
+            const list = document.getElementById('listContainer');
+            tagData.forEach((item, i) => {
+                const clipNum = String(i + 1).padStart(2, '0');
+                const div = document.createElement('div');
+                div.className = `ultra-card w-full p-5 rounded-xl flex items-center gap-4 cursor-pointer select-none shadow-lg`;
+                
+                div.onclick = () => {
+                    const textToCopy = `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view})`;
+                    
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        div.classList.add('copied-flash');
+                        setTimeout(() => div.classList.remove('copied-flash'), 400);
+                        const toast = document.getElementById('toast');
+                        toast.style.opacity = "1";
+                        setTimeout(() => toast.style.opacity = "0", 800);
+                    });
+                };
+
+                div.innerHTML = `
+                    <div class="bg-gray-900 border border-gray-800 text-gray-500 w-9 h-9 flex items-center justify-center rounded-xl text-[10px] font-bold flex-shrink-0">
+                        ${clipNum}
+                    </div>
+                    <div class="flex-grow">
+                        <div class="text-[12px] text-gray-300 font-medium leading-relaxed">
+                            ${item.tag}
+                        </div>
+                        <div class="text-[9px] text-gray-600 uppercase font-bold mt-1">
+                            VIEW: ${item.view}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+        render();
+    </script>
+</body>
+</html>
