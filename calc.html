@@ -12,7 +12,6 @@
         .dashboard-box { background-color: #121217; border: 1px solid rgba(254, 44, 85, 0.2); border-radius: 32px; padding: 1.75rem; margin-bottom: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(254, 44, 85, 0.05); }
         .clip-card { background-color: #18181b; border: 1px solid rgba(255, 255, 255, 0.03); border-radius: 24px; padding: 1.15rem 1.5rem; margin-bottom: 0.85rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); user-select: none; }
         .clip-card:hover { border-color: rgba(254, 44, 85, 0.3); background-color: #1c1c21; }
-        /* ปรับให้เหลือสีแดงสีเดียวเมื่อกดเลือก */
         .clip-card.active { background: linear-gradient(135deg, #fe2c55 0%, #ff5e7d 100%); border-color: transparent; transform: scale(1.03); box-shadow: 0 12px 25px rgba(254, 44, 85, 0.35); }
         .price-display { font-size: 4.2rem; font-weight: 700; color: #fe2c55; line-height: 1; text-shadow: 0 8px 15px rgba(254, 44, 85, 0.25); letter-spacing: -2px; }
         input { background-color: #09090b !important; border: 1px solid #27272a !important; border-radius: 20px !important; color: white !important; padding: 0.85rem !important; transition: all 0.2s; }
@@ -27,14 +26,14 @@
     <div class="app-container">
         <header class="text-center py-8">
             <h1 class="text-4xl font-bold italic tracking-tighter">ROV <span class="text-[#fe2c55]">CALC</span> PRO</h1>
-            <p class="text-[10px] text-zinc-500 uppercase tracking-[0.4em] mt-1 font-bold">STABLE VERSION 2026</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-[0.4em] mt-1 font-bold">SMART AI VERSION 2026</p>
         </header>
 
         <div class="dashboard-box">
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-15)</label>
-                    <input type="number" id="inputAmount" min="0" max="15" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-16)</label>
+                    <input type="number" id="inputAmount" min="0" max="16" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
                 </div>
                 <div>
                     <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block text-[#fe2c55] tracking-widest px-1">เรทราคา</label>
@@ -52,10 +51,10 @@
 
             <div class="flex items-end justify-between mb-6 px-1 border-b border-white/5 pb-4">
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">เรทอ้างอิง:</label>
+                    <label class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">เปรียบเทียบเรทฐาน:</label>
                     <div class="flex items-center gap-2">
                         <input type="number" id="baseRateInput" step="0.0001" oninput="recalc()" value="0.6445" class="bg-transparent border-b border-zinc-800 text-[14px] font-bold text-zinc-300 focus:text-white focus:border-[#fe2c55] w-20 outline-none transition-all pb-0.5">
-                        <button onclick="setAsBase()" class="text-[9px] text-[#fe2c55] font-bold uppercase bg-[#fe2c55]/10 px-2.5 py-1.5 rounded-xl">ดึงเรท</button>
+                        <button onclick="setAsBase()" class="text-[9px] text-[#fe2c55] font-bold uppercase bg-[#fe2c55]/10 px-2.5 py-1.5 rounded-xl transition-all">ดึงเรท</button>
                     </div>
                 </div>
                 <div id="diffContainer" class="hidden pb-1">
@@ -64,24 +63,26 @@
             </div>
 
             <div class="text-center bg-black/50 py-10 rounded-[40px] border border-zinc-800/50 shadow-inner relative">
-                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/15</div>
+                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/16</div>
                 <div class="mb-8">
-                    <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ</div>
+                    <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ (THB)</div>
                     <div class="price-display" id="displayPrice">0.00</div>
                 </div>
                 <div class="px-6">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-1.5 tracking-widest">ยอดวิวรวมสุทธิ</div>
                     <div class="text-4xl font-bold tracking-tight" id="displayTotalViews">0</div>
-                    <div id="displaySubStats" class="text-[10px] text-zinc-700 font-bold mt-3 uppercase tracking-widest">BASE: 0 • BUFFER: 0</div>
+                    <div id="displaySubStats" class="text-[10px] text-zinc-700 font-bold mt-3 uppercase tracking-widest italic">BASE: 0 • BUFFER: 0</div>
                 </div>
             </div>
 
             <div id="copyPanel" class="grid grid-cols-2 gap-4 mt-8 hidden">
                 <button onclick="copyMsg('customer')" id="btnCust" class="btn-action py-5 bg-zinc-800/50 hover:bg-zinc-800 text-white text-[11px] font-bold rounded-[24px] border border-white/5 uppercase flex flex-col items-center">
                     <span>👤 ส่งลูกค้า</span>
+                    <span class="text-[7px] opacity-40 font-normal mt-1.5">(คัดลอกรายการแท็ก)</span>
                 </button>
                 <button onclick="copyMsg('seller')" id="btnSell" class="btn-action py-5 bg-[#fe2c55] hover:bg-[#ff456a] text-white text-[11px] font-bold rounded-[24px] uppercase flex flex-col items-center">
                     <span>💰 สำหรับคนขาย</span>
+                    <span class="text-[7px] text-white/60 font-normal mt-1.5">(สถิติ & ยอดเงิน)</span>
                 </button>
             </div>
         </div>
@@ -90,7 +91,7 @@
             <div class="flex justify-between items-center mb-8 px-1">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-6 bg-[#fe2c55] rounded-full"></div>
-                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการแท็กทั้งหมด</h3>
+                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 16 แท็ก</h3>
                 </div>
                 <button onclick="resetAll()" class="text-[11px] font-bold text-zinc-600 hover:text-red-500 uppercase">RESET</button>
             </div>
@@ -101,13 +102,16 @@
     <!-- Nav -->
     <div class="bottom-tabs">
         <a href="index.html" class="flex flex-col items-center gap-1.5 text-zinc-700 opacity-40 hover:opacity-100 transition-opacity">
-            <span class="text-[10px] font-black uppercase">Tags</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg>
+            <span class="text-[9px] font-black uppercase">Tags</span>
         </a>
         <a href="mission.html" class="flex flex-col items-center gap-1.5 text-zinc-700 opacity-40 hover:opacity-100 transition-opacity">
-            <span class="text-[10px] font-black uppercase">Mission</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12z"></path></svg>
+            <span class="text-[9px] font-black uppercase">Mission</span>
         </a>
         <div class="flex flex-col items-center gap-1.5 text-[#fe2c55]">
-            <span class="text-[10px] font-black uppercase">Calc</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm6-10V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0v10a2 2 0 002 2h2a2 2 0 002-2v-10z"></path></svg>
+            <span class="text-[9px] font-black uppercase">Calc</span>
         </div>
     </div>
 
@@ -127,7 +131,8 @@
             { id: 12, tags: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", v: 12000 },
             { id: 13, tags: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", v: 12000 },
             { id: 14, tags: "#RoV #rovth #เล่นRoV", v: 12000 },
-            { id: 15, tags: "#RoV #rovth #คลิปRoV", v: 8000 }
+            { id: 15, tags: "#RoV #rovth #คลิปRoV", v: 8000 },
+            { id: 16, tags: "#RoV #rovth #GodlikeCreatorCup #Elimination", v: 8000 }
         ];
 
         let selected = [];
@@ -138,12 +143,11 @@
             clipDatabase.forEach(item => {
                 const isActive = selected.includes(item.id);
                 const div = document.createElement('div');
-                // ลบการเช็ค isSpecial ออกทั้งหมด
                 div.className = `clip-card ${isActive ? 'active' : ''}`;
                 div.onclick = () => toggle(item.id);
                 div.innerHTML = `
                     <div class="flex-grow">
-                        <div class="text-[12.5px] font-bold opacity-90 leading-snug select-none">${item.tags}</div>
+                        <div class="text-[12px] font-bold opacity-90 leading-snug select-none">${item.tags}</div>
                         <div class="text-[9px] font-bold mt-1.5 uppercase opacity-60">VIEW: ${item.v.toLocaleString()}</div>
                     </div>
                     <div class="font-black text-xl ml-4 select-none">${(item.v/1000)}k</div>
@@ -164,7 +168,7 @@
 
         function autoSelect() {
             const val = parseInt(document.getElementById('inputAmount').value) || 0;
-            const amount = Math.min(Math.max(val, 0), 15);
+            const amount = Math.min(Math.max(val, 0), 16);
             selected = [];
             for (let i = 0; i < amount; i++) {
                 selected.push(clipDatabase[i].id);
@@ -211,7 +215,7 @@
 
         function updateUI() {
             render();
-            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/15`;
+            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/16`;
             document.getElementById('copyPanel').classList.toggle('hidden', selected.length === 0);
             recalc();
         }
@@ -228,18 +232,20 @@
             if (mode === 'customer') {
                 let tagsOnly = sorted.map((id, index) => {
                     const clip = clipDatabase.find(c => c.id === id);
-                    return `${index + 1}. ${clip.tags} (View: ${(clip.v/1000)}k)`;
+                    return `คลิปที่ ${String(index + 1).padStart(2, '0')}: ${clip.tags} (View: ${clip.v.toLocaleString()})`;
                 }).join('\n');
-                finalOutput = `ลูกค้ารับคลิปตามรายการนี้นะครับ\n━━━━━━━━━━━━━━━━\n${tagsOnly}\n━━━━━━━━━━━━━━━━`;
+                
+                // อัปเดตคำพูดตามคำขอ ✨
+                finalOutput = `แท็กทั้งหมดที่ลูกค้าต้องรับ ตามนี้เลย ✨\n━━━━━━━━━━━━━━━━\n${tagsOnly}\n━━━━━━━━━━━━━━━━\nตรวจสอบข้อมูลเรียบร้อย ขอบคุณมากครับ/ค่ะ 🙏`;
             } else {
-                finalOutput = `📋 สรุปยอดขาย\n━━━━━━━━━━━━━━━━\n🎬 จำนวน: ${selected.length} คลิป\n📈 วิวพื้นฐาน: ${baseSum.toLocaleString()}\n➕ วิวกันขาด: ${(selected.length * extra).toLocaleString()}\n📊 วิวรวมสุทธิ: ${finalViews}\n💵 เรทราคา: ${rate}\n💰 รวมเงิน: ${finalPrice} บาท\n━━━━━━━━━━━━━━━━`;
+                finalOutput = `📋 สรุปยอดขาย [SMART AI REPORT]\n━━━━━━━━━━━━━━━━\n🎬 จำนวน: ${selected.length} คลิป\n📈 วิวพื้นฐาน: ${baseSum.toLocaleString()}\n➕ วิว Buffer: ${(selected.length * extra).toLocaleString()}\n📊 วิวรวมสุทธิ: ${finalViews}\n💵 เรทราคา: ${rate}\n💰 รวมเงินสุทธิ: ${finalPrice} THB\n━━━━━━━━━━━━━━━━\n📅 ${new Date().toLocaleDateString('th-TH')} | ${new Date().toLocaleTimeString('th-TH')}`;
             }
 
             navigator.clipboard.writeText(finalOutput);
             const targetBtn = mode === 'customer' ? 'btnCust' : 'btnSell';
-            const originalText = document.getElementById(targetBtn).innerHTML;
+            const originalHTML = document.getElementById(targetBtn).innerHTML;
             document.getElementById(targetBtn).innerText = "COPIED! ✅";
-            setTimeout(() => { document.getElementById(targetBtn).innerHTML = originalText; }, 1500);
+            setTimeout(() => { document.getElementById(targetBtn).innerHTML = originalHTML; }, 1500);
         }
 
         window.onload = render;
