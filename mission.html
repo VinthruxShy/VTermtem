@@ -14,7 +14,7 @@
         .clip-btn { transition: all 0.2s; border: 1px solid #222; position: relative; }
         .clip-btn.selected { background: #FE2C55 !important; border-color: #FE2C55; color: white; box-shadow: 0 0 15px rgba(254, 44, 85, 0.4); }
         .nav-active { color: #FE2C55 !important; border-top: 2px solid #FE2C55; }
-        .quick-tag { background: #1a1a1a; border: 1px solid #333; color: #888; transition: 0.15s; cursor: pointer; flex: 1 1 calc(25% - 8px); min-width: 65px; text-align: center; }
+        .quick-tag { background: #1a1a1a; border: 1px solid #333; color: #888; transition: 0.15s; cursor: pointer; flex: 1 1 calc(20% - 8px); min-width: 60px; text-align: center; }
         .quick-tag:active { background: #FE2C55; color: white; border-color: #FE2C55; transform: scale(0.95); }
         .vip-badge { position: absolute; top: -5px; right: -5px; background: #FFD700; color: #000; font-size: 8px; padding: 1px 4px; border-radius: 5px; font-weight: bold; }
         nav { background: rgba(10, 10, 10, 0.98); border-top: 1px solid rgba(255, 255, 255, 0.1); }
@@ -25,7 +25,7 @@
     <div class="w-full max-w-md space-y-4">
         <header class="text-center py-4 border-b border-gray-900">
             <h1 class="text-2xl font-bold tracking-tighter uppercase italic">RoV <span class="text-[#FE2C55]">ULTRA</span> AI</h1>
-            <p class="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">High-Precision Planning 2026</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Smart Persistence System 2026</p>
         </header>
 
         <div class="glass-card p-5 border-[#FE2C55]/20 border text-center">
@@ -35,14 +35,15 @@
                 <button onclick="runUltraAI()" class="w-full bg-[#FE2C55] text-white py-4 rounded-2xl font-bold text-lg active:scale-95 shadow-lg shadow-[#FE2C55]/20">คำนวณคูปอง</button>
             </div>
             <div class="flex flex-wrap justify-center gap-2 mb-4">
-                <button onclick="setGoal(100)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">100</button>
-                <button onclick="setGoal(300)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">300</button>
-                <button onclick="setGoal(500)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">500</button>
-                <button onclick="setGoal(800)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">800</button>
-                <button onclick="setGoal(900)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">900</button>
-                <button onclick="setGoal(1000)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">1000</button>
-                <button onclick="setGoal(1200)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">1200</button>
-                <button onclick="setGoal(1300)" class="quick-tag py-2 rounded-xl text-[11px] font-bold">1300</button>
+                <button onclick="setGoal(100)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">100</button>
+                <button onclick="setGoal(300)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">300</button>
+                <button onclick="setGoal(500)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">500</button>
+                <button onclick="setGoal(800)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">800</button>
+                <button onclick="setGoal(1000)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">1000</button>
+                <button onclick="setGoal(1100)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">1100</button>
+                <button onclick="setGoal(1200)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">1200</button>
+                <button onclick="setGoal(1300)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">1300</button>
+                <button onclick="setGoal(1400)" class="quick-tag py-2 rounded-xl text-[10px] font-bold">1400</button>
             </div>
             <button onclick="fullReset()" class="w-full p-2 rounded-xl text-[9px] text-gray-600 font-bold uppercase tracking-widest hover:text-white transition-colors">ล้างข้อมูลทั้งหมด</button>
         </div>
@@ -79,7 +80,7 @@
         </div>
 
         <div class="glass-card p-5 space-y-2">
-            <h3 class="text-xs font-bold text-[#FE2C55] uppercase italic border-l-2 border-[#FE2C55] pl-2">🕒 รางวัลที่ต้องรอรับ (12 ชม.)</h3>
+            <h3 class="text-xs font-bold text-[#FE2C55] uppercase italic border-l-2 border-[#FE2C55] pl-2">🕒 รายการรางวัลที่ต้องรอรับ</h3>
             <div id="updateList" class="space-y-2"></div>
         </div>
     </div>
@@ -98,6 +99,17 @@
         let selClips = new Set();
         let selMissions = new Set();
         let currentGoal = 0;
+
+        function save() { localStorage.setItem('rov_ultra_v3', JSON.stringify({c: Array.from(selClips), m: Array.from(selMissions), g: currentGoal})); }
+        function load() {
+            const s = localStorage.getItem('rov_ultra_v3');
+            if(s) {
+                const d = JSON.parse(s);
+                selClips = new Set(d.c); selMissions = new Set(d.m); currentGoal = d.g;
+                document.getElementById('customInput').value = currentGoal || '';
+                render();
+            }
+        }
 
         function setGoal(val) { document.getElementById('customInput').value = val; runUltraAI(); }
 
@@ -121,6 +133,7 @@
             if(count >= 5) selMissions.add('c5'); else selMissions.delete('c5');
             if(count >= 10) selMissions.add('c10'); else selMissions.delete('c10');
             if(count >= 15) selMissions.add('c15'); else selMissions.delete('c15');
+            
             let vC = 0, h10 = false, tv = 0;
             selClips.forEach(idx => { 
                 if(clipData[idx].vip) vC++; 
@@ -135,18 +148,24 @@
             if(tv >= 0.5) selMissions.add('m500'); else selMissions.delete('m500');
             if(tv >= 5) selMissions.add('m5k'); else selMissions.delete('m5k');
             if(tv >= 30) selMissions.add('m30k'); else selMissions.delete('m30k');
+
             const total = getBasePoints() + getUpdatePoints();
             document.getElementById('totalPts').innerText = total.toLocaleString();
             document.getElementById('clipCount').innerText = count;
             calculateExchange(total);
+            save();
         }
 
         function calculateExchange(pts) {
             let best = null;
-            for (let c1=0; c1<=2; c1++) for (let c2=0; c2<=4; c2++) for (let c3=0; c3<=10; c3++) {
-                if ((c1*500)+(c2*300)+(c3*100) === currentGoal) {
-                    let cost = (c1*300)+(c2*180)+(c3*70);
-                    if (!best || cost < best.cost) best = {c1, c2, c3, cost};
+            for (let c1=0; c1<=2; c1++) {
+                for (let c2=0; c2<=3; c2++) {
+                    for (let c3=0; c3<=4; c3++) {
+                        if ((c1*500)+(c2*300)+(c3*100) === currentGoal) {
+                            let cost = (c1*300)+(c2*180)+(c3*70);
+                            if (!best || cost < best.cost) best = {c1, c2, c3, cost};
+                        }
+                    }
                 }
             }
             const box = document.getElementById('exchangeSummary');
@@ -169,7 +188,7 @@
             if (val <= 0) return;
             fullReset(); currentGoal = val;
             let targetCost = 0;
-            for(let c1=0; c1<=2; c1++) for(let c2=0; c2<=4; c2++) for(let c3=0; c3<=10; c3++) {
+            for(let c1=0; c1<=2; c1++) for(let c2=0; c2<=3; c2++) for(let c3=0; c3<=4; c3++) {
                 if((c1*500)+(c2*300)+(c3*100) === currentGoal) {
                     let cost = (c1*300)+(c2*180)+(c3*70);
                     if(targetCost === 0 || cost < targetCost) targetCost = cost;
@@ -182,8 +201,8 @@
                 selClips.add(i);
                 updatePoints();
             }
-            const advice = document.getElementById('aiAdvice');
             const finalTotal = getBasePoints() + getUpdatePoints();
+            const advice = document.getElementById('aiAdvice');
             if (finalTotal >= targetCost) {
                 advice.innerHTML = `AI แนะนำทำ <span class="text-white">${selClips.size} คลิป</span> เพื่อเป้าหมาย`;
                 advice.className = "mt-4 p-3 rounded-xl bg-white/5 text-[#25F4EE] text-[11px] font-bold italic";
@@ -203,6 +222,7 @@
                 btn.onclick = () => { selClips.has(i) ? selClips.delete(i) : selClips.add(i); updatePoints(); render(); };
                 grid.appendChild(btn);
             });
+
             const mList = document.getElementById('monthlyList'); mList.innerHTML = '';
             monthlyM.forEach(m => {
                 const div = document.createElement('div');
@@ -211,6 +231,7 @@
                 div.onclick = () => { selMissions.has(m.id) ? selMissions.delete(m.id) : selMissions.add(m.id); updatePoints(); render(); };
                 mList.appendChild(div);
             });
+
             const uList = document.getElementById('updateList'); uList.innerHTML = '';
             updateM.forEach(m => {
                 const div = document.createElement('div');
@@ -233,17 +254,13 @@
         }
 
         function copyUpdateOnly() {
-            
             let adviceText = "";
             if (currentGoal === 1000) {
                 adviceText = "💡 แนะนำให้กดแลก 500 และ 300 ก่อนนะครับ แล้วรอระบบรีช่วง 12-24 ชม. ค่อยกดแลกเพิ่ม 100 อีกสองรอบให้ครบเป้าหมาย";
             } else {
                 adviceText = "💡 แนะนำให้กดแลก 500 จำนวน 2 รอบก่อนนะครับ แล้วรอระบบรีช่วง 12-24 ชม. ค่อยกลับมาแลกอีกครั้งนึง เพราะตอนนี้ภารกิจยังมาไม่ครบ ถ้าแลกแบบนี้เวลาภารกิจมาเพิ่มในอนาคตจะสามารถเก็บได้เพิ่มอีก 300-400 ปอง และใช้แต้มน้อยกว่าการแลกแพ็กเล็กครับ";
             }
-
-            
             const t = `สรุปเป้าหมาย ${currentGoal} คูปอง ✨\n\n${adviceText}\n\nตรวจสอบข้อมูลเรียบร้อย ขอบคุณที่ใช้บริการ 🙏`;
-            
             navigator.clipboard.writeText(t).then(() => {
                 const btn = document.getElementById('btnUpdate');
                 btn.innerText = "คัดลอกสำเร็จ ✅";
@@ -251,8 +268,8 @@
             });
         }
 
-        function fullReset() { selClips.clear(); selMissions.clear(); currentGoal = 0; document.getElementById('customInput').value = ''; render(); }
-        window.onload = render;
+        function fullReset() { selClips.clear(); selMissions.clear(); currentGoal = 0; document.getElementById('customInput').value = ''; localStorage.removeItem('rov_ultra_v3'); render(); }
+        window.onload = load;
     </script>
 </body>
 </html>
