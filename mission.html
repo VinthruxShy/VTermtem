@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RoV Ultra Planner - Main Focus</title>
+    <title>RoV Ultra Planner - RESET RETURN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -20,65 +20,54 @@
             border-radius: 28px; 
         }
         .point-display {
-            background: linear-gradient(180deg, rgba(254, 44, 85, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
+            background: linear-gradient(180deg, rgba(254, 44, 85, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
             border-bottom: 2px solid #FE2C55;
         }
         .clip-btn {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 16px;
+            background: #111; border: 1px solid #222; border-radius: 16px;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .clip-btn.selected {
-            background: #FE2C55;
-            border-color: #FE2C55;
-            box-shadow: 0 0 20px rgba(254, 44, 85, 0.4);
-            transform: scale(0.94);
+            background: #FE2C55; border-color: #FE2C55;
+            box-shadow: 0 0 20px rgba(254, 44, 85, 0.4); transform: scale(0.94);
         }
         .mission-item {
-            background: #0f0f0f;
-            border: 1px solid #1a1a1a;
-            border-radius: 16px;
-            padding: 12px 16px;
-            transition: 0.2s;
+            background: #0f0f0f; border: 1px solid #1a1a1a;
+            border-radius: 16px; padding: 12px 16px; transition: 0.2s;
         }
         .mission-item.active {
-            border-color: #FE2C55;
-            background: rgba(254, 44, 85, 0.1);
+            border-color: #FE2C55; background: rgba(254, 44, 85, 0.1);
         }
         .vip-badge {
-            position: absolute;
-            top: -4px; right: -4px;
-            background: #FFD700; color: #000;
-            font-size: 8px; font-weight: 900;
-            padding: 1px 5px; border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            position: absolute; top: -4px; right: -4px;
+            background: #FFD700; color: #000; font-size: 8px; font-weight: 900;
+            padding: 1px 5px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
         input[type="number"] { user-select: auto !important; -webkit-user-select: auto !important; }
     </style>
 </head>
-<body class="pb-36 px-4 pt-4">
+<body class="pb-40 px-4 pt-4">
 
     <div class="max-w-md mx-auto space-y-6">
         
         <div class="flex justify-between items-center px-2">
             <div>
                 <h1 class="text-xl font-bold tracking-tighter italic uppercase text-[#FE2C55]">Ultra <span class="text-white">Planner</span></h1>
-                <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold italic">Total Points System 2026</p>
+                <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Closed-Loop System 2026</p>
             </div>
-            <button onclick="fullReset()" class="text-[10px] font-bold text-zinc-600 bg-zinc-900 px-4 py-2 rounded-full hover:text-white transition-colors">RESET</button>
+            <button onclick="fullReset()" class="text-[10px] font-black text-zinc-400 bg-zinc-900 border border-white/5 px-4 py-2 rounded-full active:scale-90 transition-all">RESET ALL</button>
         </div>
 
         <div class="glass-card overflow-hidden shadow-2xl border-[#FE2C55]/20">
             <div class="point-display p-8 text-center">
-                <span class="text-[10px] text-[#FE2C55] uppercase font-black tracking-[0.3em] mb-1 block">แต้มสะสมทั้งหมด</span>
+                <span class="text-[10px] text-[#FE2C55] uppercase font-black tracking-[0.3em] mb-1 block">แต้มสะสมรวม</span>
                 <div id="totalPtsDisplay" class="text-8xl font-bold tracking-tighter">0</div>
                 <div class="text-xs font-bold text-zinc-500 mt-2">ต้องการทั้งหมด: <span id="targetCostDisplay" class="text-white">0</span> แต้ม</div>
             </div>
             
             <div class="grid grid-cols-1 border-t border-zinc-800 bg-black/40">
                 <div class="p-4 text-center">
-                    <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">แต้มพื้นฐาน (ที่ทำเสร็จแล้วตอนนี้)</span>
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1 italic">แต้มพื้นฐาน (ดูเพื่อปิดงานด่วน)</span>
                     <div id="basePtsDisplay" class="text-2xl font-bold text-zinc-300">0</div>
                 </div>
             </div>
@@ -88,18 +77,27 @@
                     ระบุเป้าหมายเพื่อคำนวณงาน
                 </div>
 
+                <div id="exchangeFormula" class="mb-4 p-3 bg-[#FE2C55]/5 border border-[#FE2C55]/20 rounded-2xl text-center hidden">
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">สูตรการแลกที่แนะนำ</span>
+                    <div id="exchangeList" class="text-sm font-bold text-white"></div>
+                </div>
+
                 <div id="copyPanel" class="grid grid-cols-2 gap-3 hidden">
                     <button onclick="copyBaseOnly()" class="bg-white text-black py-4 rounded-2xl text-[11px] font-black uppercase active:scale-95 transition-all shadow-lg">📋 แผนงาน</button>
-                    <button onclick="copyUpdateOnly()" class="bg-[#FE2C55] text-white py-4 rounded-2xl text-[11px] font-black uppercase active:scale-95 transition-all shadow-lg">🕒 รางวัลรอรับ</button>
+                    <button onclick="copyUpdateOnly()" class="bg-[#FE2C55] text-white py-4 rounded-2xl text-[11px] font-black uppercase active:scale-95 transition-all shadow-lg">🕒 รางวัลรอรี</button>
                 </div>
             </div>
         </div>
 
         <div class="glass-card p-5 space-y-4">
-            <h3 class="text-xs font-bold text-zinc-400 uppercase flex items-center gap-2">
-                <span class="w-1 h-3 bg-[#FE2C55] rounded-full"></span> กำหนดเป้าหมาย
+            <h3 class="text-xs font-bold text-zinc-400 uppercase flex items-center gap-2 px-1">
+                <span class="w-1 h-3 bg-[#FE2C55] rounded-full"></span> Target Setting
             </h3>
-            <input type="number" id="customInput" placeholder="กรอกจำนวนปอง" class="w-full bg-black/50 border border-zinc-800 p-5 rounded-2xl text-4xl font-bold text-center outline-none focus:border-[#FE2C55] transition-all text-white">
+            
+            <div class="relative">
+                <input type="number" id="customInput" placeholder="0" class="w-full bg-black/50 border border-zinc-800 p-5 pr-24 rounded-2xl text-4xl font-bold text-center outline-none focus:border-[#FE2C55] transition-all text-white">
+                <button onclick="runUltraAI()" class="absolute right-2 top-2 bottom-2 px-4 bg-[#FE2C55] text-white rounded-xl text-sm font-black shadow-lg active:scale-90 transition-all">ตกลง</button>
+            </div>
             
             <div class="grid grid-cols-3 gap-2">
                 <button onclick="setGoal(500)" class="bg-zinc-900 py-3.5 rounded-xl text-xs font-bold active:bg-zinc-800">500</button>
@@ -107,30 +105,28 @@
                 <button onclick="setGoal(1200)" class="bg-zinc-900 py-3.5 rounded-xl text-xs font-bold active:bg-zinc-800">1200</button>
                 <button onclick="setGoal(1300)" class="bg-zinc-900 py-3.5 rounded-xl text-xs font-bold active:bg-zinc-800">1300</button>
                 <button onclick="setGoal(1400)" class="bg-zinc-900 py-3.5 rounded-xl text-xs font-bold active:bg-zinc-800">1400</button>
-                <button onclick="runUltraAI()" class="bg-sky-500 text-white rounded-xl text-[11px] font-black uppercase shadow-lg shadow-sky-500/20 active:scale-95">Auto AI</button>
+                <button onclick="runUltraAI()" class="bg-sky-500 text-white rounded-xl text-[11px] font-black uppercase active:scale-95 shadow-lg shadow-sky-500/20">Auto AI</button>
             </div>
-            <p class="text-center text-[9px] text-zinc-500 font-bold uppercase tracking-widest italic">* พิมพ์เสร็จกด Enter ได้เลย</p>
         </div>
 
         <div class="glass-card p-5">
             <div class="flex justify-between items-center mb-4 px-1">
-                <h3 class="text-xs font-black text-zinc-400 uppercase italic">คลิปที่เลือก</h3>
-                <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 18</span>
+                <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
+                <div class="flex items-center gap-3">
+                    <button onclick="fullReset()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 18</span>
+                </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
         </div>
 
         <div class="glass-card p-5">
-            <h3 class="text-[11px] font-bold text-sky-400 uppercase mb-4 flex items-center gap-2">
-                📅 งานที่ทำได้ทันที (Monthly)
-            </h3>
+            <h3 class="text-[11px] font-bold text-sky-400 uppercase mb-4">📅 งานที่ได้รับแต้มทันที (Monthly)</h3>
             <div id="monthlyList" class="space-y-2"></div>
         </div>
 
         <div class="glass-card p-5">
-            <h3 class="text-[11px] font-bold text-[#FE2C55] uppercase mb-4 flex items-center gap-2">
-                🕒 งานที่รอรีเซ็ต (Milestone)
-            </h3>
+            <h3 class="text-[11px] font-bold text-[#FE2C55] uppercase mb-4">🕒 งานที่รอรีเซ็ต 12-24 ชม. (Milestone)</h3>
             <div id="updateList" class="space-y-2"></div>
         </div>
 
@@ -151,9 +147,7 @@
         let selMissions = new Set();
         let currentGoal = 0;
 
-        document.getElementById('customInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') { runUltraAI(); this.blur(); }
-        });
+        document.getElementById('customInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') { runUltraAI(); e.target.blur(); } });
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
@@ -165,10 +159,10 @@
             return { base, total: base + extra };
         }
 
-        function syncLogic() {
+        function syncMilestones() {
             const count = selClips.size;
-            const missions = ['m30full', 'c2', 'c5', 'c10', 'c15', 'vip1', 'vip3', 'vip7', 'vip12', 'v10k', 'm500', 'm5k', 'm30k'];
-            missions.forEach(m => selMissions.delete(m));
+            const milestones = ['m30full', 'c2', 'c5', 'c10', 'c15', 'vip1', 'vip3', 'vip7', 'vip12', 'v10k', 'm500', 'm5k', 'm30k'];
+            milestones.forEach(m => selMissions.delete(m));
 
             if(count * 4 >= 30) selMissions.add('m30full');
             if(count >= 2) selMissions.add('c2');
@@ -193,40 +187,52 @@
         }
 
         function updateUI() {
-            syncLogic();
+            syncMilestones();
             const pts = calculatePoints();
             currentGoal = parseInt(document.getElementById('customInput').value) || 0;
-
             document.getElementById('totalPtsDisplay').innerText = pts.total;
             document.getElementById('basePtsDisplay').innerText = pts.base;
             document.getElementById('clipCountDisplay').innerText = selClips.size;
 
-            let targetCost = 0;
-            for(let c1=0; c1<=2; c1++) for(let c2=0; c2<=3; c2++) for(let c3=0; c3<=4; c3++) {
-                if((c1*500)+(c2*300)+(c3*100) === currentGoal) {
-                    let cost = (c1*300)+(c2*180)+(c3*70);
-                    if(targetCost === 0 || cost < targetCost) targetCost = cost;
+            let best = null;
+            for(let c500=0; c500<=2; c500++) {
+                for(let c300=0; c300<=3; c300++) {
+                    for(let c100=0; c100<=4; c100++) {
+                        if((c500*500) + (c300*300) + (c100*100) === currentGoal) {
+                            let cost = (c500*300) + (c300*180) + (c100*70);
+                            if(!best || cost < best.cost) best = {c500, c300, c100, cost};
+                        }
+                    }
                 }
             }
-            document.getElementById('targetCostDisplay').innerText = targetCost;
 
             const advice = document.getElementById('aiAdvice');
             const panel = document.getElementById('copyPanel');
+            const formulaBox = document.getElementById('exchangeFormula');
 
-            if(currentGoal > 0 && targetCost > 0) {
+            if(currentGoal > 0 && best) {
                 panel.classList.remove('hidden');
-                if(pts.total >= targetCost) {
-                    advice.innerHTML = `✅ แต้มรวมเพียงพอแล้ว! (พื้นฐานทำได้ ${pts.base} แต้ม)`;
+                formulaBox.classList.remove('hidden');
+                document.getElementById('targetCostDisplay').innerText = best.cost;
+                let formulaStr = [];
+                if(best.c500 > 0) formulaStr.push(`500x${best.c500}`);
+                if(best.c300 > 0) formulaStr.push(`300x${best.c300}`);
+                if(best.c100 > 0) formulaStr.push(`100x${best.c100}`);
+                document.getElementById('exchangeList').innerText = formulaStr.join(' + ');
+
+                if(pts.total >= best.cost) {
+                    advice.innerHTML = `✅ แต้มรวมเพียงพอแล้ว! (พื้นฐาน: ${pts.base})`;
                     advice.className = "text-[11px] text-center font-black italic py-3 px-4 rounded-2xl mb-4 bg-green-500/10 text-green-400 border border-green-500/20";
                 } else {
-                    advice.innerHTML = `⚠️ แต้มยังไม่พอ ขาดอีก ${targetCost - pts.total} แต้ม`;
+                    advice.innerHTML = `⚠️ ขาดอีก ${best.cost - pts.total} แต้ม`;
                     advice.className = "text-[11px] text-center font-bold italic py-3 px-4 rounded-2xl mb-4 bg-red-500/10 text-red-400 border border-red-500/20";
                 }
             } else {
-                panel.classList.add('hidden');
+                panel.classList.add('hidden'); formulaBox.classList.add('hidden');
+                document.getElementById('targetCostDisplay').innerText = "0";
                 advice.className = "text-[11px] text-center font-bold italic py-3 px-4 rounded-2xl mb-4 bg-zinc-900 text-zinc-500 border border-white/5";
             }
-            localStorage.setItem('rov_ultra_vMain', JSON.stringify({c:Array.from(selClips), m:Array.from(selMissions), g:currentGoal}));
+            localStorage.setItem('rov_ultra_vFinal', JSON.stringify({c:Array.from(selClips), m:Array.from(selMissions), g:currentGoal}));
         }
 
         function renderAll() {
@@ -252,7 +258,7 @@
             updateM.forEach(u => {
                 const div = document.createElement('div');
                 div.className = `mission-item flex justify-between items-center ${selMissions.has(u.id) ? 'active' : ''}`;
-                div.innerHTML = `<span class="text-[11px] font-bold text-zinc-500">${u.name}</span><span class="text-[10px] font-black text-[#FE2C55]">+${u.pts}</span>`;
+                div.innerHTML = `<span class="text-[11px] font-bold text-zinc-400">${u.name}</span><span class="text-[10px] font-black text-[#FE2C55]">+${u.pts}</span>`;
                 div.onclick = () => { selMissions.has(u.id) ? selMissions.delete(u.id) : selMissions.add(u.id); renderAll(); };
                 uList.appendChild(div);
             });
@@ -262,17 +268,16 @@
         function runUltraAI() {
             const val = parseInt(document.getElementById('customInput').value) || 0;
             let targetCost = 0;
-            for(let c1=0; c1<=2; c1++) for(let c2=0; c2<=3; c2++) for(let c3=0; c3<=4; c3++) {
-                if((c1*500)+(c2*300)+(c3*100) === val) {
-                    let cost = (c1*300)+(c2*180)+(c3*70);
+            for(let c500=0; c500<=2; c500++) for(let c300=0; c300<=3; c300++) for(let c100=0; c100<=4; c100++) {
+                if((c500*500)+(c300*300)+(c100*100) === val) {
+                    let cost = (c500*300)+(c300*180)+(c100*70);
                     if(targetCost === 0 || cost < targetCost) targetCost = cost;
                 }
             }
             if(targetCost === 0) return;
-            selClips.clear(); 
-            selMissions.add('tiktok'); selMissions.add('first_m'); selMissions.add('v_first'); selMissions.add('l100');
+            selClips.clear(); selMissions.add('tiktok'); selMissions.add('first_m'); selMissions.add('v_first'); selMissions.add('l100');
             for(let i=0; i<clipData.length; i++) {
-                syncLogic();
+                syncMilestones();
                 if(calculatePoints().total >= targetCost) break;
                 selClips.add(i);
             }
@@ -291,10 +296,10 @@
             navigator.clipboard.writeText(`สรุปเป้าหมาย ${currentGoal} คูปอง\n\n${advice}\n\nขอบคุณที่ใช้บริการ 🙏`);
         }
 
-        function fullReset() { localStorage.removeItem('rov_ultra_vMain'); location.reload(); }
+        function fullReset() { localStorage.removeItem('rov_ultra_vFinal'); location.reload(); }
         
         window.onload = () => {
-            const s = localStorage.getItem('rov_ultra_vMain');
+            const s = localStorage.getItem('rov_ultra_vFinal');
             if(s) {
                 const d = JSON.parse(s);
                 selClips = new Set(d.c); selMissions = new Set(d.m); currentGoal = d.g;
