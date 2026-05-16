@@ -40,8 +40,8 @@
         <div class="dashboard-box">
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-18)</label>
-                    <input type="number" id="inputAmount" min="0" max="18" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-20)</label>
+                    <input type="number" id="inputAmount" min="0" max="20" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
                 </div>
                 <div>
                     <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block text-[#fe2c55] tracking-widest px-1">เรทราคา</label>
@@ -71,26 +71,27 @@
             </div>
 
             <div class="text-center bg-black/50 py-10 rounded-[40px] border border-zinc-800/50 shadow-inner relative">
-                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/18</div>
+                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/20</div>
                 <div class="mb-8">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ (THB)</div>
                     <div class="price-display" id="displayPrice">0.00</div>
                 </div>
                 <div class="px-6">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-1.5 tracking-widest">ยอดวิวรวมสุทธิ</div>
-                    <div class="text-4xl font-bold tracking-tight" id="displayTotalViews">0</div>
-                    <div id="displaySubStats" class="text-[10px] text-zinc-700 font-bold mt-3 uppercase tracking-widest italic">BASE: 0 • BUFFER: 0</div>
+                    <div class="text-4xl font-bold tracking-tight mb-2" id="displayTotalViews">0</div>
+                    <div id="displaySubStats" class="text-[10px] text-zinc-700 font-bold uppercase tracking-widest italic mb-1">BASE: 0 • BUFFER: 0</div>
+                    <div id="displayPoints" class="text-[10px] text-[#fe2c55] font-black uppercase tracking-widest">MISSION POINTS: 0 PTS</div>
                 </div>
             </div>
 
             <div id="copyPanel" class="grid grid-cols-2 gap-4 mt-8 hidden">
                 <button onclick="copyMsg('customer')" id="btnCust" class="btn-action py-5 bg-zinc-800/50 hover:bg-zinc-800 text-white text-[11px] font-bold rounded-[24px] border border-white/5 uppercase flex flex-col items-center">
                     <span>👤 ส่งลูกค้า</span>
-                    <span class="text-[7px] opacity-40 font-normal mt-1.5">(รายการแท็ก)</span>
+                    <span class="text-[7px] opacity-40 font-normal mt-1.5">(รายการแท็ก & แต้ม)</span>
                 </button>
                 <button onclick="copyMsg('seller')" id="btnSell" class="btn-action py-5 bg-[#fe2c55] hover:bg-[#ff456a] text-white text-[11px] font-bold rounded-[24px] uppercase flex flex-col items-center">
                     <span>💰 สำหรับคนขาย</span>
-                    <span class="text-[7px] text-white/60 font-normal mt-1.5">(ยอดเงิน & สถิติ)</span>
+                    <span class="text-[7px] text-white/60 font-normal mt-1.5">(ยอดเงิน & แต้มภารกิจ)</span>
                 </button>
             </div>
         </div>
@@ -99,7 +100,7 @@
             <div class="flex justify-between items-center mb-8 px-1">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-6 bg-[#fe2c55] rounded-full"></div>
-                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 18 แท็ก</h3>
+                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 20 แท็ก</h3>
                 </div>
                 <button onclick="resetAll()" class="text-[11px] font-bold text-zinc-600 hover:text-red-500 uppercase">RESET</button>
             </div>
@@ -141,10 +142,23 @@
             { id: 15, tags: "#RoV #rovth #คลิปRoV", v: 8000 },
             { id: 16, tags: "#RoV #rovth #GodlikeCreatorCup #Elimination", v: 8000 },
             { id: 17, tags: "#RoV #AttackOnTitan #RoVxAOT #FlowbornArmorTitan", v: 10000 },
-            { id: 18, tags: "#RoV #RoVThailand #RoVเป็นเกมตลก #ใส่นัวแฟมิลี่", v: 8000 }
+            { id: 18, tags: "#RoV #RoVThailand #RoVเป็นเกมตลก #ใส่นัวแฟมิลี่", v: 8000 },
+            { id: 19, tags: "#RoV #AttackOnTitan #RoVxAOT #TitanFever #FortuneSurvival", v: 10000 },
+            { id: 20, tags: "#RoV #RoVเป็นเกมตลก #ล็อกอินลุ้นสกินMystical", v: 8000 }
         ];
 
         let selected = [];
+
+        function getPointsForId(id) {
+            if (id === 1 || id === 2) return 20;
+            if (id >= 3 && id <= 19) return 25;
+            if (id === 20) return 35;
+            return 0;
+        }
+
+        function calculateTotalPoints() {
+            return selected.reduce((sum, id) => sum + getPointsForId(id), 0);
+        }
 
         function render() {
             const listContainer = document.getElementById('listView');
@@ -157,7 +171,7 @@
                 div.innerHTML = `
                     <div class="flex-grow">
                         <div class="text-[12px] font-bold opacity-90 leading-snug select-none">${item.tags}</div>
-                        <div class="text-[9px] font-bold mt-1.5 uppercase opacity-60">VIEW: ${item.v.toLocaleString()}</div>
+                        <div class="text-[9px] font-bold mt-1.5 uppercase opacity-60">VIEW: ${item.v.toLocaleString()} • (+${getPointsForId(item.id)} PTS)</div>
                     </div>
                     <div class="font-black text-xl ml-4 select-none">${(item.v/1000)}k</div>
                 `;
@@ -177,7 +191,7 @@
 
         function autoSelect() {
             const val = parseInt(document.getElementById('inputAmount').value) || 0;
-            const amount = Math.min(Math.max(val, 0), 18);
+            const amount = Math.min(Math.max(val, 0), 20);
             selected = [];
             for (let i = 0; i < amount; i++) {
                 selected.push(clipDatabase[i].id);
@@ -206,11 +220,13 @@
             const cash = (totalSum / 1000) * rate;
             const baseCash = (totalSum / 1000) * baseRateInput;
             const diff = cash - baseCash;
+            const totalPoints = calculateTotalPoints();
 
             document.getElementById('displayPrice').innerText = cash.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('displayTotalViews').innerText = totalSum.toLocaleString();
             document.getElementById('extraLabel').innerText = `${extraSum.toLocaleString()} EXTRA`;
             document.getElementById('displaySubStats').innerText = `BASE: ${baseSum.toLocaleString()} • BUFFER: ${extraSum.toLocaleString()}`;
+            document.getElementById('displayPoints').innerText = `MISSION POINTS: ${totalPoints.toLocaleString()} PTS`;
 
             const diffContainer = document.getElementById('diffContainer');
             const diffBadge = document.getElementById('diffBadge');
@@ -224,7 +240,7 @@
 
         function updateUI() {
             render();
-            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/18`;
+            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/20`;
             document.getElementById('copyPanel').classList.toggle('hidden', selected.length === 0);
             recalc();
         }
@@ -235,18 +251,19 @@
             const finalViews = document.getElementById('displayTotalViews').innerText;
             const finalPrice = document.getElementById('displayPrice').innerText;
             const baseSum = selected.reduce((sum, id) => sum + (clipDatabase.find(c => c.id === id)?.v || 0), 0);
+            const totalPoints = calculateTotalPoints();
             const sorted = [...selected].sort((a, b) => a - b);
             
             let finalOutput = "";
             if (mode === 'customer') {
                 let tagsOnly = sorted.map((id, index) => {
                     const clip = clipDatabase.find(c => c.id === id);
-                    return `คลิปที่ ${String(index + 1).padStart(2, '0')}: ${clip.tags} (View: ${clip.v.toLocaleString()})`;
+                    return `คลิปที่ ${String(index + 1).padStart(2, '0')}: ${clip.tags} (View: ${clip.v.toLocaleString()}) [${getPointsForId(id)} แต้ม]`;
                 }).join('\n');
                 
-                finalOutput = `รายการแท็กที่ต้องได้รับทั้งหมด ✨\n━━━━━━━━━━━━━━━━\n${tagsOnly}\n━━━━━━━━━━━━━━━━\nตรวจสอบข้อมูลเรียบร้อย ขอบคุณที่ใช้บริการ 🙏`;
+                finalOutput = `รายการแท็กที่ต้องได้รับทั้งหมด ✨\n━━━━━━━━━━━━━━━━\n${tagsOnly}\n━━━━━━━━━━━━━━━━\n🎁 แต้มภารกิจรวมที่ได้รับ: ${totalPoints.toLocaleString()} แต้ม\nตรวจสอบข้อมูลเรียบร้อย ขอบคุณที่ใช้บริการ 🙏`;
             } else {
-                finalOutput = `📋 สรุปยอดขาย [SMART AI REPORT]\n━━━━━━━━━━━━━━━━\n🎬 จำนวน: ${selected.length} คลิป\n📈 วิวพื้นฐาน: ${baseSum.toLocaleString()}\n➕ วิว Buffer: ${(selected.length * extra).toLocaleString()}\n📊 วิวรวมสุทธิ: ${finalViews}\n💵 เรทราคา: ${rate}\n💰 รวมเงินสุทธิ: ${finalPrice} THB\n━━━━━━━━━━━━━━━━\n📅 ${new Date().toLocaleDateString('th-TH')} | ${new Date().toLocaleTimeString('th-TH')}`;
+                finalOutput = `📋 สรุปยอดขาย [SMART AI REPORT]\n━━━━━━━━━━━━━━━━\n🎬 จำนวน: ${selected.length} คลิป\n📈 วิวพื้นฐาน: ${baseSum.toLocaleString()}\n➕ วิว Buffer: ${(selected.length * extra).toLocaleString()}\n📊 วิวรวมสุทธิ: ${finalViews}\n⭐ แต้มภารกิจรวม: ${totalPoints.toLocaleString()} PTS\n💵 เรทราคา: ${rate}\n💰 รวมเงินสุทธิ: ${finalPrice} THB\n━━━━━━━━━━━━━━━━\n📅 ${new Date().toLocaleDateString('th-TH')} | ${new Date().toLocaleTimeString('th-TH')}`;
             }
 
             navigator.clipboard.writeText(finalOutput);
