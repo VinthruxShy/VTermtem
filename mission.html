@@ -139,9 +139,9 @@
     </nav>
 
     <script>
-        // อัปเดตข้อมูลให้เป็น 14 คลิป พร้อมใส่ข้อมูลวิวเพื่อนำไปคำนวณเควสสะสมวิวต่อ
+        // อัปเดตสถานะคลิปที่ 3 ถึง 14 ให้เป็น VIP ทั้งหมด (vip: true) เรียบร้อยแล้ว
         const clipData = [
-            {v:6, vip:false}, {v:6, vip:false}, {v:10, vip:false}, // คลิป 1-3
+            {v:6, vip:false}, {v:6, vip:false}, {v:10, vip:true},  // คลิป 1-3 (คลิปที่ 3 เป็น VIP)
             {v:10, vip:true}, {v:10, vip:true}, {v:10, vip:true},   // คลิป 4-6
             {v:15, vip:true}, {v:15, vip:true}, {v:15, vip:true},   // คลิป 7-9
             {v:20, vip:true}, {v:20, vip:true}, {v:20, vip:true},   // คลิป 10-12
@@ -159,7 +159,6 @@
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
-        // อัปเดตเงื่อนไขคะแนนตามที่ส่งมา: คลิป 1-3 = 25 แต้ม | คลิป 4-14 = 30 แต้ม
         function getPointsForIdx(idx) {
             const clipNum = idx + 1;
             if (clipNum >= 1 && clipNum <= 3) return 25;
