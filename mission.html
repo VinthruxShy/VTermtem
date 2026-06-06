@@ -114,7 +114,7 @@
                 <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="clearClips()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
-                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 14</span>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 16</span>
                 </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
@@ -139,13 +139,14 @@
     </nav>
 
     <script>
-        // อัปเดตสถานะคลิปที่ 3 ถึง 14 ให้เป็น VIP ทั้งหมด (vip: true) เรียบร้อยแล้ว
+        // อัปเดตฐานข้อมูลคลิปให้มี 16 คลิป โดยคลิป 15-16 เป็นคลิปบอลโลก (vip: true พื่อให้เข้าเงื่อนไขภารกิจ)
         const clipData = [
-            {v:6, vip:false}, {v:6, vip:false}, {v:10, vip:true},  // คลิป 1-3 (คลิปที่ 3 เป็น VIP)
+            {v:6, vip:false}, {v:6, vip:false}, {v:10, vip:true},  // คลิป 1-3
             {v:10, vip:true}, {v:10, vip:true}, {v:10, vip:true},   // คลิป 4-6
             {v:15, vip:true}, {v:15, vip:true}, {v:15, vip:true},   // คลิป 7-9
             {v:20, vip:true}, {v:20, vip:true}, {v:20, vip:true},   // คลิป 10-12
-            {v:20, vip:true}, {v:10, vip:true}                      // คลิป 13-14
+            {v:20, vip:true}, {v:10, vip:true},                     // คลิป 13-14
+            {v:10, vip:true}, {v:10, vip:true}                      // คลิป 15-16 (เพิ่มเข้ามาใหม่)
         ];
         
         const monthlyM = [{id:'m500', name:'สะสมครบ 500 วิว', pts:20},{id:'m5k', name:'สะสมครบ 5,000 วิว', pts:20},{id:'m30k', name:'สะสมครบ 30,000 วิว', pts:20},{id:'m30full', name:'ครบ 30 เควสย่อย', pts:60}];
@@ -159,10 +160,12 @@
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
+        // ปรับปรุงเงื่อนไขเรทแต้มพื้นฐานของแต่ละคลิปให้ตรงตามที่คุยไว้ก่อนหน้านี้
         function getPointsForIdx(idx) {
             const clipNum = idx + 1;
-            if (clipNum >= 1 && clipNum <= 3) return 25;
-            if (clipNum >= 4 && clipNum <= 14) return 30;
+            if (clipNum >= 1 && clipNum <= 2) return 20;     // คลิป 1-2 ได้ 20 แต้ม
+            if (clipNum >= 3 && clipNum <= 14) return 25;    // คลิป 3-14 ได้ 25 แต้ม
+            if (clipNum === 15 || clipNum === 16) return 30; // คลิปบอลโลก 15-16 ได้ 30 แต้ม
             return 0;
         }
 
@@ -179,6 +182,7 @@
             const milestones = ['m30full', 'c2', 'c5', 'c10', 'c15', 'vip1', 'vip3', 'vip7', 'vip12', 'v10k', 'm500', 'm5k', 'm30k'];
             milestones.forEach(m => selMissions.delete(m));
 
+            // เควสย่อยสะสม (คิดจากจำนวนคลิป x 4 เควสย่อยต่อคลิป)
             if(count * 4 >= 30) selMissions.add('m30full');
             if(count >= 2) selMissions.add('c2');
             if(count >= 5) selMissions.add('c5');
@@ -196,9 +200,11 @@
             if(vC >= 7) selMissions.add('vip7');
             if(vC >= 12) selMissions.add('vip12');
             if(h10) selMissions.add('v10k');
-            if(tv >= 0.5) selMissions.add('m500');
-            if(tv >= 5) selMissions.add('m5k');
-            if(tv >= 30) selMissions.add('m30k');
+            
+            // สะสมยอดวิว (คูณ 1000 เพื่อแปลงหน่วย k ในฐานข้อมูล)
+            if(tv * 1000 >= 500) selMissions.add('m500');
+            if(tv * 1000 >= 5000) selMissions.add('m5k');
+            if(tv * 1000 >= 30000) selMissions.add('m30k');
         }
 
         function updateUI() {
@@ -283,10 +289,13 @@
         function runUltraAI() {
             const val = parseInt(document.getElementById('customInput').value) || 0;
             let targetCost = 0;
-            for(let c500=0; c500<=2; c500++) for(let c300=0; c300<=3; c300++) for(let c100=0; c100<=4; c100++) {
-                if((c500*500)+(c300*300)+(c100*100) === val) {
-                    let cost = (c500*300)+(c300*180)+(c100*70);
-                    if(targetCost === 0 || cost < targetCost) targetCost = cost;
+            for(let c500=0; c500<=2; c500++) for(let c300=0; c300<=3; c300++) for(let c100=0; c100<=4; r++) {
+                // วนลูปหากล่องสุ่มของรางวัลที่ใช้แต้มน้อยที่สุด
+                for(let c100=0; c100<=4; c100++) {
+                    if((c500*500)+(c300*300)+(c100*100) === val) {
+                        let cost = (c500*300)+(c300*180)+(c100*70);
+                        if(targetCost === 0 || cost < targetCost) targetCost = cost;
+                    }
                 }
             }
             if(targetCost === 0) return;
