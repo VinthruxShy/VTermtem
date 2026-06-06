@@ -40,8 +40,8 @@
         <div class="dashboard-box">
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-14)</label>
-                    <input type="number" id="inputAmount" min="0" max="14" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-16)</label>
+                    <input type="number" id="inputAmount" min="0" max="16" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
                 </div>
                 <div>
                     <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block text-[#fe2c55] tracking-widest px-1">เรทราคา</label>
@@ -71,7 +71,7 @@
             </div>
 
             <div class="text-center bg-black/50 py-10 rounded-[40px] border border-zinc-800/50 shadow-inner relative">
-                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/14</div>
+                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/16</div>
                 <div class="mb-8">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ (THB)</div>
                     <div class="price-display" id="displayPrice">0.00</div>
@@ -100,7 +100,7 @@
             <div class="flex justify-between items-center mb-8 px-1">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-6 bg-[#fe2c55] rounded-full"></div>
-                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 14 แท็ก</h3>
+                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 16 แท็ก</h3>
                     </div>
                 <button onclick="resetAll()" class="text-[11px] font-bold text-zinc-600 hover:text-red-500 uppercase">RESET</button>
             </div>
@@ -124,7 +124,6 @@
     </div>
 
     <script>
-        // อัปเดตฐานข้อมูลคลิปใหม่ทั้งหมดเป็น 14 รายการให้ตรงกัน
         const clipDatabase = [
             { id: 1, tags: "#RoV #คลิปRoV #rovth", v: 6000 },
             { id: 2, tags: "#RoV #RoVเป็นเกมตลก #คลิปRoV", v: 6000 },
@@ -139,15 +138,18 @@
             { id: 11, tags: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", v: 20000 },
             { id: 12, tags: "#RoV #rovth #เล่นRoV", v: 20000 },
             { id: 13, tags: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", v: 20000 },
-            { id: 14, tags: "#RoV #rovth #คลิปRoV", v: 10000 }
+            { id: 14, tags: "#RoV #rovth #คลิปRoV", v: 10000 },
+            { id: 15, tags: "#RoVบอลโลก #เน้นนัวไม่เน้นประตู #RoV", v: 10000 },
+            { id: 16, tags: "#RoVบอลโลก #ไก่กาเป็นดาวยิง #RoV", v: 10000 }
         ];
 
         let selected = [];
 
-        // ฟังก์ชันคำนวณแต้มภารกิจสะสม
+        // ฟังก์ชันคำนวณแต้มภารกิจสะสมตามเงื่อนไขใหม่
         function getPointsForId(id) {
             if (id === 1 || id === 2) return 20;
             if (id >= 3 && id <= 14) return 25;
+            if (id === 15 || id === 16) return 30; // เพิ่มเงื่อนไขคลิปใหม่ 30 แต้ม
             return 0;
         }
 
@@ -186,7 +188,7 @@
 
         function autoSelect() {
             const val = parseInt(document.getElementById('inputAmount').value) || 0;
-            const amount = Math.min(Math.max(val, 0), 14); // ปรับระดับสูงสุดเป็น 14
+            const amount = Math.min(Math.max(val, 0), 16); // ขยายขอบเขตสูงสุดเป็น 16 คลิป
             selected = [];
             for (let i = 0; i < amount; i++) {
                 selected.push(clipDatabase[i].id);
@@ -235,7 +237,7 @@
 
         function updateUI() {
             render();
-            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/14`; // แสดงตัวเลือกเป็นส่วนของ 14
+            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/16`; // อัปเดตส่วนแสดงผลเป็น /16
             document.getElementById('copyPanel').classList.toggle('hidden', selected.length === 0);
             recalc();
         }
