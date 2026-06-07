@@ -114,7 +114,7 @@
                 <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="clearClips()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
-                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 16</span>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 17</span>
                 </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
@@ -139,18 +139,19 @@
     </nav>
 
     <script>
-        // ฐานข้อมูลขยายเป็น 16 คลิป โดยคลิปที่ 15-16 เป็น VIP (vip: true) เพื่อให้ระบบนำไปนับรวมในเควสเงื่อนไข VIP ได้อย่างถูกต้อง
+        // ฐานข้อมูลเพิ่มคลิปที่ 17 (แท็กตัวใหม่) เข้าไปในระบบโดยตั้งค่าเป็น vip: true
         const clipData = [
             {v:6, vip:false}, {v:6, vip:false}, {v:10, vip:true},  // คลิป 1-3
             {v:10, vip:true}, {v:10, vip:true}, {v:10, vip:true},   // คลิป 4-6
             {v:15, vip:true}, {v:15, vip:true}, {v:15, vip:true},   // คลิป 7-9
             {v:20, vip:true}, {v:20, vip:true}, {v:20, vip:true},   // คลิป 10-12
             {v:20, vip:true}, {v:10, vip:true},                     // คลิป 13-14
-            {v:10, vip:true}, {v:10, vip:true}                      // คลิป 15-16
+            {v:10, vip:true}, {v:10, vip:true},                     // คลิป 15-16
+            {v:15, vip:true}                                        // คลิปที่ 17 (แท็กตัวใหม่ยอดวิว 15k)
         ];
         
         const monthlyM = [{id:'m500', name:'สะสมครบ 500 วิว', pts:20},{id:'m5k', name:'สะสมครบ 5,000 วิว', pts:20},{id:'m30k', name:'สะสมครบ 30,000 วิว', pts:20},{id:'m30full', name:'ครบ 30 เควสย่อย', pts:60}];
-        const updateM = [{id:'tiktok', name:'ผูกบัญชี TikTok', pts:10},{id:'first_m', name:'ทำภารกิจครั้งแรก', pts:10},{id:'v_first', name:'ลงวีดีโอครั้งแรก', pts:10},{id:'l100', name:'ยอดไลค์ 100 ไลค์', pts:15},{id:'v10k', name:'ยอดวิวสูงสุด 10,000 วิว', pts:20},{id:'c2', name:'ลงคลิปครบ 2 คลิป', pts:10},{id:'c5', name:'ลงคลิปครบ 5 คลิป', pts:10},{id:'c10', name:'ลงคลิปครบ 10 คลิป', pts:10},{id:'c15', name:'ลงคลิปครบ 15 คลิป', pts:10},{id:'vip1', name:'VIP (1 งาน)', pts:10},{id:'vip3', name:'VIP (3 งาน)', pts:10},{id:'vip7', name:'VIP (7 งาน)', pts:10},{id:'vip12', name:'VIP (12 งาน)', pts:10}];
+        const updateM = [{id:'tiktok', name:'ผูกบัญชี TikTok', pts:10},{id:'first_m', name:'ทำภารกิจครั้งแรก', pts:10},{id:'v_first', name:'ลงวีดีโอครั้งแรก', pts:10},{idxl100', name:'ยอดไลค์ 100 ไลค์', pts:15},{id:'v10k', name:'ยอดวิวสูงสุด 10,000 วิว', pts:20},{id:'c2', name:'ลงคลิปครบ 2 คลิป', pts:10},{id:'c5', name:'ลงคลิปครบ 5 คลิป', pts:10},{id:'c10', name:'ลงคลิปครบ 10 คลิป', pts:10},{id:'c15', name:'ลงคลิปครบ 15 คลิป', pts:10},{id:'vip1', name:'VIP (1 งาน)', pts:10},{id:'vip3', name:'VIP (3 งาน)', pts:10},{id:'vip7', name:'VIP (7 งาน)', pts:10},{id:'vip12', name:'VIP (12 งาน)', pts:10}];
 
         let selClips = new Set();
         let selMissions = new Set();
@@ -160,11 +161,12 @@
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
-        // แก้ไขกลับมาใช้หลักการคำนวณแต้มของเดิมประจำหน้านี้อย่างถูกต้อง
+        // ปรับแต่งฟังก์ชันแจกแต้มสะสมรายคลิปตามเงื่อนไขของชุดข้อมูลหน้า Ultra Planner
         function getPointsForIdx(idx) {
             const clipNum = idx + 1;
-            if (clipNum >= 1 && clipNum <= 3) return 25;  // คลิป 1-3 ได้ 25 แต้มตามเดิม
-            if (clipNum >= 4 && clipNum <= 16) return 30; // คลิป 4-14 และคลิปใหม่ 15-16 ได้ 30 แต้ม
+            if (clipNum >= 1 && clipNum <= 3) return 25;  // คลิป 1-3 ได้ 25 แต้มตามสูตรเดิมของหน้านี้
+            if (clipNum >= 4 && clipNum <= 16) return 30; // คลิป 4-16 ได้ 30 แต้ม
+            if (clipNum === 17) return 30;                // คลิปที่ 17 (แท็กตัวใหม่) ได้ 30 แต้ม
             return 0;
         }
 
