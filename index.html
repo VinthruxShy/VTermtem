@@ -70,11 +70,13 @@
             { tag: "#RoV #rovth #คลิปRoV", view: "10,000" },
             { tag: "#RoVบอลโลก #เน้นนัวไม่เน้นประตู #RoV", view: "10,000" },
             { tag: "#RoVบอลโลก #ไก่กาเป็นดาวยิง #RoV", view: "10,000" },
-            { tag: "#RoVSchoolTour2026 #ควิกแชทครูตุ๊กกี้ #RoV #RoVxTukky", view: "15,000" }
+            { tag: "#RoVSchoolTour2026 #ควิกแชทครูตุ๊กกี้ #RoV #RoVxTukky", view: "15,000" },
+            { tag: "#RoV #RoVThailand #ROVShowMatch #ตีป้อมวิทยา", view: "15,000" }
         ];
 
         function render() {
             const list = document.getElementById('listContainer');
+            list.innerHTML = ''; // ล้างข้อมูลเก่าก่อนเรนเดอร์ใหม่
             tagData.forEach((item, i) => {
                 const clipNum = String(i + 1).padStart(2, '0');
                 const div = document.createElement('div');
