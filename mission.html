@@ -114,7 +114,7 @@
                 <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="clearClips()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
-                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 18</span>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 19</span>
                 </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
@@ -147,10 +147,11 @@
             {v:20, vip:true}, {v:10, vip:true},                     // คลิป 13-14
             {v:10, vip:true}, {v:10, vip:true},                     // คลิป 15-16
             {v:15, vip:true},                                       // คลิปที่ 17
-            {v:15, vip:true}                                        // คลิปที่ 18 (เพิ่มใหม่ ยอดวิว 15k, เป็นคลิป VIP)
+            {v:15, vip:true},                                       // คลิปที่ 18
+            {v:10, vip:true}                                        // คลิปที่ 19 (อัปเดตใหม่ล่าสุด ยอดวิว 10k, มีสถานะ VIP)
         ];
         
-        const monthlyM = [{id:'m500', name:'สะสมครบ 500 วิว', pts:20},{id:'m5k', name:'สะสมครบ 5,000 วิว', pts:20},{id:'m30k', name:'สะสมครบ 30,000 วิว', pts:20},{id:'m30full', name:'ครบ 30 เควสย่อย', pts:60}];
+        const monthlyM = [{id:'m500', name:'สะสมครบ 500 วิว', pts:20},{id:'m5k', name:'สะสมครบ 5,000 วิว', pts:20},{id:'m30k', name:'สะสมครบ 30,000 วิว', pts:20},{id:'m30full', name:'ครบ 30 เเควสย่อย', pts:60}];
         const updateM = [{id:'tiktok', name:'ผูกบัญชี TikTok', pts:10},{id:'first_m', name:'ทำภารกิจครั้งแรก', pts:10},{id:'v_first', name:'ลงวีดีโอครั้งแรก', pts:10},{id:'l100', name:'ยอดไลค์ 100 ไลค์', pts:15},{id:'v10k', name:'ยอดวิวสูงสุด 10,000 วิว', pts:20},{id:'c2', name:'ลงคลิปครบ 2 คลิป', pts:10},{id:'c5', name:'ลงคลิปครบ 5 คลิป', pts:10},{id:'c10', name:'ลงคลิปครบ 10 คลิป', pts:10},{id:'c15', name:'ลงคลิปครบ 15 คลิป', pts:10},{id:'vip1', name:'VIP (1 งาน)', pts:10},{id:'vip3', name:'VIP (3 งาน)', pts:10},{id:'vip7', name:'VIP (7 งาน)', pts:10},{id:'vip12', name:'VIP (12 งาน)', pts:10}];
 
         let selClips = new Set();
@@ -164,7 +165,7 @@
         function getPointsForIdx(idx) {
             const clipNum = idx + 1;
             if (clipNum >= 1 && clipNum <= 3) return 25;
-            if (clipNum >= 4 && clipNum <= 18) return 30; // ขยายเงื่อนไขการให้ 30 แต้มจนถึงคลิปที่ 18
+            if (clipNum >= 4 && clipNum <= 19) return 30; // ขยายเงื่อนไขการให้ 30 แต้มจนถึงคลิปที่ 19
             return 0;
         }
 
