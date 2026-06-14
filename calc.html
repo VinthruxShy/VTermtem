@@ -40,8 +40,8 @@
         <div class="dashboard-box">
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-18)</label>
-                    <input type="number" id="inputAmount" min="0" max="18" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-19)</label>
+                    <input type="number" id="inputAmount" min="0" max="19" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
                 </div>
                 <div>
                     <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block text-[#fe2c55] tracking-widest px-1">เรทราคา</label>
@@ -71,7 +71,7 @@
             </div>
 
             <div class="text-center bg-black/50 py-10 rounded-[40px] border border-zinc-800/50 shadow-inner relative">
-                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/18</div>
+                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/19</div>
                 <div class="mb-8">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ (THB)</div>
                     <div class="price-display" id="displayPrice">0.00</div>
@@ -100,7 +100,7 @@
             <div class="flex justify-between items-center mb-8 px-1">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-6 bg-[#fe2c55] rounded-full"></div>
-                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 18 แท็ก</h3>
+                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 19 แท็ก</h3>
                     </div>
                 <button onclick="resetAll()" class="text-[11px] font-bold text-zinc-600 hover:text-red-500 uppercase">RESET</button>
             </div>
@@ -142,7 +142,8 @@
             { id: 15, tags: "#RoVบอลโลก #เน้นนัวไม่เน้นประตู #RoV", v: 10000 },
             { id: 16, tags: "#RoVบอลโลก #ไก่กาเป็นดาวยิง #RoV", v: 10000 },
             { id: 17, tags: "#RoVSchoolTour2026 #ควิกแชทครูตุ๊กกี้ #RoV #RoVxTukky", v: 15000 },
-            { id: 18, tags: "#RoV #RoVThailand #ROVShowMatch #ตีป้อมวิทยา", v: 15000 }
+            { id: 18, tags: "#RoV #RoVThailand #ROVShowMatch #ตีป้อมวิทยา", v: 15000 },
+            { id: 19, tags: "#ROVAPL #APL2026 #ไฮไลต์ROV", v: 10000 }
         ];
 
         let selected = [];
@@ -151,7 +152,7 @@
         function getPointsForId(id) {
             if (id === 1 || id === 2) return 20;
             if (id >= 3 && id <= 14) return 25;
-            if (id >= 15 && id <= 18) return 30; // ขยายขอบเขตให้ครอบคลุม ID 18 ที่ได้ 30 แต้ม
+            if (id >= 15 && id <= 19) return 30; // ขยายขอบเขตให้ครอบคลุม ID 19 ที่ได้ 30 แต้ม
             return 0;
         }
 
@@ -190,7 +191,7 @@
 
         function autoSelect() {
             const val = parseInt(document.getElementById('inputAmount').value) || 0;
-            const amount = Math.min(Math.max(val, 0), 18); // ขยายขอบเขตสูงสุดเพิ่มเป็น 18 คลิป
+            const amount = Math.min(Math.max(val, 0), 19); // ขยายขอบเขตสูงสุดเพิ่มเป็น 19 คลิป
             selected = [];
             for (let i = 0; i < amount; i++) {
                 selected.push(clipDatabase[i].id);
@@ -239,7 +240,7 @@
 
         function updateUI() {
             render();
-            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/18`; // อัปเดตส่วนแสดงผลเป็น /18
+            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/19`; // อัปเดตส่วนแสดงผลเป็น /19
             document.getElementById('copyPanel').classList.toggle('hidden', selected.length === 0);
             recalc();
         }
