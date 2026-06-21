@@ -40,8 +40,8 @@
         <div class="dashboard-box">
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-27)</label>
-                    <input type="number" id="inputAmount" min="0" max="27" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-28)</label>
+                    <input type="number" id="inputAmount" min="0" max="28" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
                 </div>
                 <div>
                     <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block text-[#fe2c55] tracking-widest px-1">เรทราคา</label>
@@ -71,7 +71,7 @@
             </div>
 
             <div class="text-center bg-black/50 py-10 rounded-[40px] border border-zinc-800/50 shadow-inner relative">
-                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/27</div>
+                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/28</div>
                 <div class="mb-8">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ (THB)</div>
                     <div class="price-display" id="displayPrice">0.00</div>
@@ -100,7 +100,7 @@
             <div class="flex justify-between items-center mb-8 px-1">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-6 bg-[#fe2c55] rounded-full"></div>
-                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 27 แท็ก</h3>
+                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 28 แท็ก</h3>
                     </div>
                 <button onclick="resetAll()" class="text-[11px] font-bold text-zinc-600 hover:text-red-500 uppercase">RESET</button>
             </div>
@@ -144,7 +144,6 @@
             { id: 17, tags: "#RoVSchoolTour2026 #ควิกแชทครูตุ๊กกี้ #RoV #RoVxTukky", v: 15000 },
             { id: 18, tags: "#RoV #RoVThailand #ROVShowMatch #ตีป้อมวิทยา", v: 15000 },
             { id: 19, tags: "#ROVAPL #APL2026 #ไฮไลต์ROV", v: 10000 },
-            // เพิ่มชุดข้อมูลใหม่ 8 คลิป
             { id: 20, tags: "#ROVAPL #APL2026 #ช็อตเด็ดROV", v: 10000 },
             { id: 21, tags: "#RoVTH #CreatorNextGen #ครีเอเตอร์หน้าใหม่", v: 15000 },
             { id: 22, tags: "#RoV #คลิปRoV #RoVThailand", v: 40000 },
@@ -152,7 +151,9 @@
             { id: 24, tags: "#RoV #RoVThailand #RoVเกมภาพสวย", v: 15000 },
             { id: 25, tags: "#RoV #RoVThailand #RoVSportFest", v: 40000 },
             { id: 26, tags: "#RoVเป็นเกมตลก #RoV #RoVHighlight", v: 40000 },
-            { id: 27, tags: "#RoVเป็นเกมตลก #RoV #ขโมยบัพ", v: 40000 }
+            { id: 27, tags: "#RoVเป็นเกมตลก #RoV #ขโมยบัพ", v: 40000 },
+            // เพิ่มแฮชแท็กใหม่ชุดฟุตบอลโลกล่าสุดเป็น IDที่ 28
+            { id: 28, tags: "#กูรูลูกหนัง #RoV #บอลโลก2026 #PredictionChallenge", v: 10000 }
         ];
 
         let selected = [];
@@ -161,8 +162,8 @@
         function getPointsForId(id) {
             if (id === 1 || id === 2) return 20;
             if (id >= 3 && id <= 14) return 25;
-            if (id >= 15 && id <= 21) return 30; // ขยายรวมกลุ่ม ID 20, 21 ที่ได้ 30 แต้ม
-            if (id >= 22 && id <= 27) return 70; // เพิ่มเงื่อนไขกลุ่มแต้มใหญ่ 70 แต้ม
+            if (id >= 15 && id <= 21) return 30;
+            if (id >= 22 && id <= 28) return 70; // ขยายขอบเขตครอบคลุม ID 28 แต้มใหญ่
             return 0;
         }
 
@@ -201,7 +202,7 @@
 
         function autoSelect() {
             const val = parseInt(document.getElementById('inputAmount').value) || 0;
-            const amount = Math.min(Math.max(val, 0), 27); // ขยายขอบเขตสูงสุดเพิ่มเป็น 27 คลิป
+            const amount = Math.min(Math.max(val, 0), 28); // ขยายขอบเขตสูงสุดเพิ่มเป็น 28 คลิป
             selected = [];
             for (let i = 0; i < amount; i++) {
                 selected.push(clipDatabase[i].id);
@@ -250,7 +251,7 @@
 
         function updateUI() {
             render();
-            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/27`; // อัปเดตส่วนแสดงผลเป็น /27
+            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/28`; // อัปเดตส่วนแสดงผลเป็น /28
             document.getElementById('copyPanel').classList.toggle('hidden', selected.length === 0);
             recalc();
         }
