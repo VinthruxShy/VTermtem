@@ -114,7 +114,7 @@
                 <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="clearClips()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
-                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 27</span>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 28</span>
                 </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
@@ -148,11 +148,12 @@
             {v:10, vip:true}, {v:10, vip:true},                     // คลิป 15-16
             {v:15, vip:true}, {v:15, vip:true},                     // คลิป 17-18
             {v:10, vip:true},                                       // คลิปที่ 19
-            // เพิ่มชุดข้อมูลใหม่ 8 คลิป (20-27)
             {v:10, vip:true}, {v:15, vip:true},                     // คลิป 20-21
             {v:40, vip:true}, {v:40, vip:true},                     // คลิป 22-23
             {v:15, vip:true}, {v:40, vip:true},                     // คลิป 24-25
-            {v:40, vip:true}, {v:40, vip:true}                      // คลิป 26-27
+            {v:40, vip:true}, {v:40, vip:true},                     // คลิป 26-27
+            // เพิ่มแฮชแท็กใหม่ชุดฟุตบอลโลกล่าสุดเป็นคลิปที่ 28
+            {v:10, vip:true}                                        // คลิป 28
         ];
         
         const monthlyM = [{id:'m500', name:'สะสมครบ 500 วิว', pts:20},{id:'m5k', name:'สะสมครบ 5,000 วิว', pts:20},{id:'m30k', name:'สะสมครบ 30,000 วิว', pts:20},{id:'m30full', name:'ครบ 30 เเควสย่อย', pts:60}];
@@ -171,7 +172,7 @@
             if (clipNum === 1 || clipNum === 2) return 20;
             if (clipNum >= 3 && clipNum <= 14) return 25;
             if (clipNum >= 15 && clipNum <= 21) return 30;
-            if (clipNum >= 22 && clipNum <= 27) return 70;
+            if (clipNum >= 22 && clipNum <= 28) return 70; // ขยายรวมคลิปที่ 28 ที่เข้ามาในกลุ่มแต้มใหญ่
             return 0;
         }
 
