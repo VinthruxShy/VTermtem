@@ -40,8 +40,8 @@
         <div class="dashboard-box">
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-28)</label>
-                    <input type="number" id="inputAmount" min="0" max="28" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-15)</label>
+                    <input type="number" id="inputAmount" min="0" max="15" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
                 </div>
                 <div>
                     <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block text-[#fe2c55] tracking-widest px-1">เรทราคา</label>
@@ -71,7 +71,7 @@
             </div>
 
             <div class="text-center bg-black/50 py-10 rounded-[40px] border border-zinc-800/50 shadow-inner relative">
-                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/28</div>
+                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/15</div>
                 <div class="mb-8">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ (THB)</div>
                     <div class="price-display" id="displayPrice">0.00</div>
@@ -100,8 +100,8 @@
             <div class="flex justify-between items-center mb-8 px-1">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-6 bg-[#fe2c55] rounded-full"></div>
-                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 28 แท็ก</h3>
-                    </div>
+                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 15 แท็ก</h3>
+                </div>
                 <button onclick="resetAll()" class="text-[11px] font-bold text-zinc-600 hover:text-red-500 uppercase">RESET</button>
             </div>
             <div id="listView"></div>
@@ -118,53 +118,36 @@
             <span class="text-[9px] font-black uppercase">Mission</span>
         </a>
         <div class="flex flex-col items-center gap-1.5 text-[#fe2c55]">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm6-10V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0v10a2 2 0 002 2h2a2 2 0 002-2v-10z"></path></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm6-10V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0v10a2 2 0 002 2h2a2 2 0 002-2v-10"></path></svg>
             <span class="text-[9px] font-black uppercase">Calc</span>
         </div>
     </div>
 
     <script>
+        // อัปเดตฐานข้อมูลคลิปใหม่ 15 ชุดตามที่ระบุ ยอดวิวตรงตามจริง แต้มคงที่ 30 คะแนน
         const clipDatabase = [
-            { id: 1, tags: "#RoV #คลิปRoV #rovth", v: 6000 },
-            { id: 2, tags: "#RoV #RoVเป็นเกมตลก #คลิปRoV", v: 6000 },
-            { id: 3, tags: "#RoV #หยุดยาวเล่นRoV #เปิดให้เล่นสกินระดับสูง", v: 10000 },
-            { id: 4, tags: "#RoV #ตีป้อมวิทยา #ชีวิตนักเรียน #เกรด4ในเลน", v: 10000 },
-            { id: 5, tags: "#RoV #RoVเป็นเกมตลก #rovth", v: 10000 },
-            { id: 6, tags: "#RoV #RoVเป็นเกมตลก #fpy", v: 10000 },
-            { id: 7, tags: "#RoV #rovth #RoVThailand", v: 15000 },
-            { id: 8, tags: "#RoV #rovth #fpy", v: 15000 },
-            { id: 9, tags: "#RoV #rovth #trending", v: 15000 },
+            { id: 1, tags: "#RoV #คลิปRoV #rovth", v: 10000 },
+            { id: 2, tags: "#RoV #RoVเป็นเกมตลก #คลิปRoV", v: 10000 },
+            { id: 3, tags: "#RoV #ทมิฬหอกศักดิ์สิทธิ์ #RoVฮีโร่ใหม่หัวใจไทย #RoVฮีโร่ใหม่ทมิฬ", v: 15000 },
+            { id: 4, tags: "#RoV #RoVเป็นเกมตลก #rovth", v: 15000 },
+            { id: 5, tags: "#RoV #RoVเป็นเกมตลก #fpy", v: 15000 },
+            { id: 6, tags: "#RoVเป็นเกมตลก #RoV #RoVThailand", v: 20000 },
+            { id: 7, tags: "#RoV #rovth #RoVThailand", v: 20000 },
+            { id: 8, tags: "#RoV #rovth #fpy", v: 20000 },
+            { id: 9, tags: "#RoV #rovth #trending", v: 20000 },
             { id: 10, tags: "#RoV #RoVเป็นเกมตลก #trending", v: 20000 },
             { id: 11, tags: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", v: 20000 },
             { id: 12, tags: "#RoV #rovth #เล่นRoV", v: 20000 },
             { id: 13, tags: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", v: 20000 },
-            { id: 14, tags: "#RoV #rovth #คลิปRoV", v: 10000 },
-            { id: 15, tags: "#RoVบอลโลก #เน้นนัวไม่เน้นประตู #RoV", v: 10000 },
-            { id: 16, tags: "#RoVบอลโลก #ไก่กาเป็นดาวยิง #RoV", v: 10000 },
-            { id: 17, tags: "#RoVSchoolTour2026 #ควิกแชทครูตุ๊กกี้ #RoV #RoVxTukky", v: 15000 },
-            { id: 18, tags: "#RoV #RoVThailand #ROVShowMatch #ตีป้อมวิทยา", v: 15000 },
-            { id: 19, tags: "#ROVAPL #APL2026 #ไฮไลต์ROV", v: 10000 },
-            { id: 20, tags: "#ROVAPL #APL2026 #ช็อตเด็ดROV", v: 10000 },
-            { id: 21, tags: "#RoVTH #CreatorNextGen #ครีเอเตอร์หน้าใหม่", v: 15000 },
-            { id: 22, tags: "#RoV #คลิปRoV #RoVThailand", v: 40000 },
-            { id: 23, tags: "#RoV #RoVเป็นเกมตลก #RoVThailand", v: 40000 },
-            { id: 24, tags: "#RoV #RoVThailand #RoVเกมภาพสวย", v: 15000 },
-            { id: 25, tags: "#RoV #RoVThailand #RoVSportFest", v: 40000 },
-            { id: 26, tags: "#RoVเป็นเกมตลก #RoV #RoVHighlight", v: 40000 },
-            { id: 27, tags: "#RoVเป็นเกมตลก #RoV #ขโมยบัพ", v: 40000 },
-            // เพิ่มแฮชแท็กใหม่ชุดฟุตบอลโลกล่าสุดเป็น IDที่ 28
-            { id: 28, tags: "#กูรูลูกหนัง #RoV #บอลโลก2026 #PredictionChallenge", v: 10000 }
+            { id: 14, tags: "#RoV #rovth #RoVThailand", v: 20000 },
+            { id: 15, tags: "#RoV #rovth #คลิปRoV", v: 15000 }
         ];
 
         let selected = [];
 
-        // ฟังก์ชันคำนวณแต้มภารกิจสะสมตามเงื่อนไข
+        // เงื่อนไขแต้มใหม่: ทุกไอดีได้รับ 30 แต้มเท่ากันทั้งหมด
         function getPointsForId(id) {
-            if (id === 1 || id === 2) return 20;
-            if (id >= 3 && id <= 14) return 25;
-            if (id >= 15 && id <= 21) return 30;
-            if (id >= 22 && id <= 28) return 70; // ขยายขอบเขตครอบคลุม ID 28 แต้มใหญ่
-            return 0;
+            return 30;
         }
 
         function calculateTotalPoints() {
@@ -202,7 +185,7 @@
 
         function autoSelect() {
             const val = parseInt(document.getElementById('inputAmount').value) || 0;
-            const amount = Math.min(Math.max(val, 0), 28); // ขยายขอบเขตสูงสุดเพิ่มเป็น 28 คลิป
+            const amount = Math.min(Math.max(val, 0), 15); // จำกัดสูงสุด 15 คลิป
             selected = [];
             for (let i = 0; i < amount; i++) {
                 selected.push(clipDatabase[i].id);
@@ -251,7 +234,7 @@
 
         function updateUI() {
             render();
-            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/28`; // อัปเดตส่วนแสดงผลเป็น /28
+            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/15`; // ปรับเศษแสดงผลสูงสุดเป็น /15
             document.getElementById('copyPanel').classList.toggle('hidden', selected.length === 0);
             recalc();
         }
