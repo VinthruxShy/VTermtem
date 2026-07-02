@@ -114,7 +114,7 @@
                 <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="clearClips()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
-                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 28</span>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 15</span>
                 </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
@@ -139,25 +139,40 @@
     </nav>
 
     <script>
+        // อัปเดตชุดข้อมูลคลิปใหม่ 15 คลิป (1-2 ทั่วไป / 3-15 VIP) แต้มคงที่ 30 คะแนน
         const clipData = [
-            {v:6, vip:false}, {v:6, vip:false}, {v:10, vip:true},   // คลิป 1-3
-            {v:10, vip:true}, {v:10, vip:true}, {v:10, vip:true},   // คลิป 4-6
-            {v:15, vip:true}, {v:15, vip:true}, {v:15, vip:true},   // คลิป 7-9
-            {v:20, vip:true}, {v:20, vip:true}, {v:20, vip:true},   // คลิป 10-12
-            {v:20, vip:true}, {v:10, vip:true},                     // คลิป 13-14
-            {v:10, vip:true}, {v:10, vip:true},                     // คลิป 15-16
-            {v:15, vip:true}, {v:15, vip:true},                     // คลิป 17-18
-            {v:10, vip:true},                                       // คลิปที่ 19
-            {v:10, vip:true}, {v:15, vip:true},                     // คลิป 20-21
-            {v:40, vip:true}, {v:40, vip:true},                     // คลิป 22-23
-            {v:15, vip:true}, {v:40, vip:true},                     // คลิป 24-25
-            {v:40, vip:true}, {v:40, vip:true},                     // คลิป 26-27
-            // เพิ่มแฮชแท็กใหม่ชุดฟุตบอลโลกล่าสุดเป็นคลิปที่ 28
-            {v:10, vip:true}                                        // คลิป 28
+            {v:10, vip:false}, {v:10, vip:false}, // คลิป 1-2 (ทั่วไป)
+            {v:15, vip:true},  {v:15, vip:true},  {v:15, vip:true},  // คลิป 3-5 (VIP)
+            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 6-8 (VIP)
+            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 9-11 (VIP)
+            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 12-14 (VIP)
+            {v:15, vip:true}                                         // คลิป 15 (VIP)
         ];
         
-        const monthlyM = [{id:'m500', name:'สะสมครบ 500 วิว', pts:20},{id:'m5k', name:'สะสมครบ 5,000 วิว', pts:20},{id:'m30k', name:'สะสมครบ 30,000 วิว', pts:20},{id:'m30full', name:'ครบ 30 เเควสย่อย', pts:60}];
-        const updateM = [{id:'tiktok', name:'ผูกบัญชี TikTok', pts:10},{id:'first_m', name:'ทำภารกิจครั้งแรก', pts:10},{id:'v_first', name:'ลงวีดีโอครั้งแรก', pts:10},{id:'l100', name:'ยอดไลค์ 100 ไลค์', pts:15},{id:'v10k', name:'ยอดวิวสูงสุด 10,000 วิว', pts:20},{id:'c2', name:'ลงคลิปครบ 2 คลิป', pts:10},{id:'c5', name:'ลงคลิปครบ 5 คลิป', pts:10},{id:'c10', name:'ลงคลิปครบ 10 คลิป', pts:10},{id:'c15', name:'ลงคลิปครบ 15 คลิป', pts:10},{id:'vip1', name:'VIP (1 งาน)', pts:10},{id:'vip3', name:'VIP (3 งาน)', pts:10},{id:'vip7', name:'VIP (7 งาน)', pts:10},{id:'vip12', name:'VIP (12 งาน)', pts:10}];
+        // อัปเดตงานที่ได้รับแต้มทันทีตามเงื่อนไขใหม่ของคุณ
+        const monthlyM = [
+            {id:'m1k', name:'สะสมครบ 1,000 วิว', pts:20},
+            {id:'m10k', name:'สะสมครบ 10,000 วิว', pts:20},
+            {id:'m50k', name:'สะสมครบ 50,000 วิว', pts:20},
+            {id:'m40full', name:'ครบ 40 ภารกิจย่อย', pts:60}
+        ];
+
+        // อัปเดตงานที่รอรีเซ็ต 12-24 ชม. ตามเกณฑ์ใหม่ทั้งหมดของคุณ
+        const updateM = [
+            {id:'tiktok', name:'ผูกบัญชี', pts:10},
+            {id:'first_normal', name:'ทำภารกิจทั่วไปสำเร็จ 1 ภารกิจ', pts:10},
+            {id:'v_rov_first', name:'ลงวีดีโอ #RoV', pts:10},
+            {id:'l100', name:'ยอดไลค์ 100', pts:15},
+            {id:'v10k_max', name:'ยอดวิวสูงสุด 10,000วิว', pts:20},
+            {id:'c2', name:'ลง 2 วีดีโอ', pts:10},
+            {id:'c5', name:'ลง 5 วีดีโอ', pts:10},
+            {id:'c10', name:'ลง 10 วีดีโอ', pts:10},
+            {id:'c15', name:'ลง 15 วีดีโอ', pts:10},
+            {id:'vip1', name:'ทำภารกิจ VIP สำเร็จ 1ภารกิจ', pts:10},
+            {id:'vip3', name:'ทำภารกิจ VIP สำเร็จ 3ภารกิจ', pts:10},
+            {id:'vip7', name:'ทำภารกิจ VIP สำเร็จ 7ภารกิจ', pts:10},
+            {id:'vip12', name:'ทำภารกิจ VIP สำเร็จ 12ภารกิจ', pts:10}
+        ];
 
         let selClips = new Set();
         let selMissions = new Set();
@@ -167,13 +182,9 @@
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
+        // เงื่อนไขการรับแต้ม: ทุกคลิป 1-15 ได้รับ 30 แต้มเท่ากันทั้งหมด
         function getPointsForIdx(idx) {
-            const clipNum = idx + 1;
-            if (clipNum === 1 || clipNum === 2) return 20;
-            if (clipNum >= 3 && clipNum <= 14) return 25;
-            if (clipNum >= 15 && clipNum <= 21) return 30;
-            if (clipNum >= 22 && clipNum <= 28) return 70; // ขยายรวมคลิปที่ 28 ที่เข้ามาในกลุ่มแต้มใหญ่
-            return 0;
+            return 30;
         }
 
         function calculatePoints() {
@@ -186,30 +197,50 @@
 
         function syncMilestones() {
             const count = selClips.size;
-            const milestones = ['m30full', 'c2', 'c5', 'c10', 'c15', 'vip1', 'vip3', 'vip7', 'vip12', 'v10k', 'm500', 'm5k', 'm30k'];
+            // ล้างสถานะคำนวณอัตโนมัติเก่าก่อนลูปรอบใหม่
+            const milestones = ['m40full', 'c2', 'c5', 'c10', 'c15', 'vip1', 'vip3', 'vip7', 'vip12', 'v10k_max', 'm1k', 'm10k', 'm50k'];
             milestones.forEach(m => selMissions.delete(m));
 
-            if(count * 4 >= 30) selMissions.add('m30full');
+            // สมมติฐานโจทย์การนับจำนวนภารกิจย่อยสุทธิ (ตัวอย่าง: คลิปคูณ 4 หรือตามแผนเควส)
+            if(count * 4 >= 40) selMissions.add('m40full');
+            
+            // ตรวจสอบเงื่อนไขจำนวนวีดีโอที่ลง
             if(count >= 2) selMissions.add('c2');
             if(count >= 5) selMissions.add('c5');
             if(count >= 10) selMissions.add('c10');
             if(count >= 15) selMissions.add('c15');
             
-            let vC = 0, h10 = false, tv = 0;
+            let normalCount = 0;
+            let vipCount = 0;
+            let has10kView = false;
+            let totalViews = 0;
+
             selClips.forEach(idx => { 
-                if(clipData[idx].vip) vC++; 
-                if(clipData[idx].v >= 10) h10 = true;
-                tv += clipData[idx].v;
+                if(clipData[idx].vip) {
+                    vipCount++; 
+                } else {
+                    normalCount++;
+                }
+                if(clipData[idx].v >= 10) has10kView = true;
+                totalViews += clipData[idx].v;
             });
-            if(vC >= 1) selMissions.add('vip1');
-            if(vC >= 3) selMissions.add('vip3');
-            if(vC >= 7) selMissions.add('vip7');
-            if(vC >= 12) selMissions.add('vip12');
-            if(h10) selMissions.add('v10k');
+
+            // ตรวจสอบภารกิจทั่วไป
+            if(normalCount >= 1) selMissions.add('first_normal');
+
+            // ตรวจสอบระดับขั้นภารกิจ VIP
+            if(vipCount >= 1) selMissions.add('vip1');
+            if(vipCount >= 3) selMissions.add('vip3');
+            if(vipCount >= 7) selMissions.add('vip7');
+            if(vipCount >= 12) selMissions.add('vip12');
             
-            if(tv * 1000 >= 500) selMissions.add('m500');
-            if(tv * 1000 >= 5000) selMissions.add('m5k');
-            if(tv * 1000 >= 30000) selMissions.add('m30k');
+            // ยอดวิวสูงสุดและสะสมรวม
+            if(has10kView) selMissions.add('v10k_max');
+            
+            const realTotalViews = totalViews * 1000;
+            if(realTotalViews >= 1000) selMissions.add('m1k');
+            if(realTotalViews >= 10000) selMissions.add('m10k');
+            if(realTotalViews >= 50000) selMissions.add('m50k');
         }
 
         function updateUI() {
@@ -294,14 +325,14 @@
         function runUltraAI() {
             const val = parseInt(document.getElementById('customInput').value) || 0;
             let targetCost = 0;
-            for(let c500=0; c500<=2; c500++) for(let c300=0; c300<=3; c300++) for(let c100=0; c100<=4; c100++) {
+            for(let c500=0; c500<=2; c500++) for(let c300=0; c300<=3; r100=0; c100<=4; c100++) {
                 if((c500*500)+(c300*300)+(c100*100) === val) {
                     let cost = (c500*300)+(c300*180)+(c100*70);
                     if(targetCost === 0 || cost < targetCost) targetCost = cost;
                 }
             }
             if(targetCost === 0) return;
-            selClips.clear(); selMissions.add('tiktok'); selMissions.add('first_m'); selMissions.add('v_first'); selMissions.add('l100');
+            selClips.clear(); selMissions.add('tiktok'); selMissions.add('v_rov_first'); selMissions.add('l100');
             for(let i=0; i<clipData.length; i++) {
                 syncMilestones();
                 if(calculatePoints().total >= targetCost) break;
