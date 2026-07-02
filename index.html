@@ -15,10 +15,6 @@
         .nav-professional { background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.05); }
         .nav-item-active::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 20px; height: 3px; background-color: #FE2C55; border-radius: 2px; box-shadow: 0 0 10px rgba(254, 44, 85, 0.7); }
         
-        /* สไตล์พิเศษสำหรับแท็กซ้ำ (รายการที่ 14) ให้สีต่างแต่ยังคลิกได้ปกติ */
-        .duplicate-card { background: #1a1510; border: 1px solid #d97706; }
-        .duplicate-card:active { border-color: #d97706 !important; background: #2a1f15 !important; }
-        
         body { 
             user-select: none; 
             -webkit-user-select: none;
@@ -70,7 +66,7 @@
             { tag: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", view: "20,000", pts: "30" },
             { tag: "#RoV #rovth #เล่นRoV", view: "20,000", pts: "30" },
             { tag: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", view: "20,000", pts: "30" },
-            { tag: "#RoV #rovth #RoVThailand", view: "20,000", pts: "30", isDuplicate: true, reason: "แท็กซ้ำ ไว้ลงหลังสุด" }, // รายการที่ 14 ใส่สาเหตุเพิ่มเติม
+            { tag: "#RoV #rovth #RoVThailand", view: "20,000", pts: "30", note: "แท็กซ้ำ ไว้ลงหลังสุด" }, // รายการที่ 14 รูปแบบเดียวกับ 15
             { tag: "#RoV #rovth #คลิปRoV", view: "15,000", pts: "30", note: "คลิปบัคเพิ่มคลิปในภารกิจได้แล้วค่อยปั้มวิว" }
         ];
 
@@ -81,71 +77,39 @@
                 const clipNum = String(i + 1).padStart(2, '0');
                 const div = document.createElement('div');
                 
-                // แยกการแสดงผลหน้าตา แต่ฟังก์ชันกดก๊อปปี้ยังทำงานได้ทั้งหมด
-                if (item.isDuplicate) {
-                    div.className = `ultra-card duplicate-card w-full p-5 rounded-xl flex items-center gap-4 cursor-pointer select-none shadow-lg`;
+                div.className = `ultra-card w-full p-5 rounded-xl flex items-center gap-4 cursor-pointer select-none shadow-lg`;
+                
+                div.onclick = () => {
+                    // ถ้ามีหมายเหตุ/สาเหตุ ให้ก๊อปปี้แนบข้อความตามหลังไปด้วย
+                    const textToCopy = item.note 
+                        ? `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view}) [สาเหตุ: ${item.note}]`
+                        : `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view})`;
                     
-                    div.onclick = () => {
-                        // ข้อความเวลาคลี่ก๊อปปี้ของกล่องที่ 14 จะแนบสาเหตุไปด้วย
-                        const textToCopy = `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view}) [สาเหตุ: ${item.reason}]`;
-                        
-                        navigator.clipboard.writeText(textToCopy).then(() => {
-                            div.classList.add('copied-flash');
-                            setTimeout(() => div.classList.remove('copied-flash'), 400);
-                            const toast = document.getElementById('toast');
-                            toast.style.opacity = "1";
-                            setTimeout(() => toast.style.opacity = "0", 800);
-                        });
-                    };
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        div.classList.add('copied-flash');
+                        setTimeout(() => div.classList.remove('copied-flash'), 400);
+                        const toast = document.getElementById('toast');
+                        toast.style.opacity = "1";
+                        setTimeout(() => toast.style.opacity = "0", 800);
+                    });
+                };
 
-                    div.innerHTML = `
-                        <div class="bg-amber-950 border border-amber-700 text-amber-500 w-9 h-9 flex items-center justify-center rounded-xl text-[10px] font-bold flex-shrink-0">
-                            ${clipNum}
-                        </div>
-                        <div class="flex-grow">
-                            <div class="text-[12px] text-amber-500 font-bold uppercase tracking-wider mb-0.5">
-                                [ ${item.reason} ]
-                            </div>
-                            <div class="text-[12px] text-gray-300 font-medium leading-relaxed">
-                                ${item.tag}
-                            </div>
-                            <div class="text-[9px] text-gray-500 uppercase font-bold mt-1">
-                                VIEW: ${item.view} | ${item.pts} PTS
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    div.className = `ultra-card w-full p-5 rounded-xl flex items-center gap-4 cursor-pointer select-none shadow-lg`;
-                    
-                    div.onclick = () => {
-                        const textToCopy = `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view})`;
-                        
-                        navigator.clipboard.writeText(textToCopy).then(() => {
-                            div.classList.add('copied-flash');
-                            setTimeout(() => div.classList.remove('copied-flash'), 400);
-                            const toast = document.getElementById('toast');
-                            toast.style.opacity = "1";
-                            setTimeout(() => toast.style.opacity = "0", 800);
-                        });
-                    };
+                const noteHTML = item.note ? `<div class="text-[10px] text-rose-400 font-medium mt-1 italic">${item.note}</div>` : '';
 
-                    const noteHTML = item.note ? `<div class="text-[10px] text-rose-400 font-medium mt-1 italic">${item.note}</div>` : '';
-
-                    div.innerHTML = `
-                        <div class="bg-gray-900 border border-gray-800 text-gray-500 w-9 h-9 flex items-center justify-center rounded-xl text-[10px] font-bold flex-shrink-0">
-                            ${clipNum}
+                div.innerHTML = `
+                    <div class="bg-gray-900 border border-gray-800 text-gray-500 w-9 h-9 flex items-center justify-center rounded-xl text-[10px] font-bold flex-shrink-0">
+                        ${clipNum}
+                    </div>
+                    <div class="flex-grow">
+                        <div class="text-[12px] text-gray-300 font-medium leading-relaxed">
+                            ${item.tag}
                         </div>
-                        <div class="flex-grow">
-                            <div class="text-[12px] text-gray-300 font-medium leading-relaxed">
-                                ${item.tag}
-                            </div>
-                            <div class="text-[9px] text-gray-600 uppercase font-bold mt-1">
-                                VIEW: ${item.view} | ${item.pts} PTS
-                            </div>
-                            ${noteHTML}
+                        <div class="text-[9px] text-gray-600 uppercase font-bold mt-1">
+                            VIEW: ${item.view} | ${item.pts} PTS
                         </div>
-                    `;
-                }
+                        ${noteHTML}
+                    </div>
+                `;
                 list.appendChild(div);
             });
         }
