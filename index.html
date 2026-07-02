@@ -66,7 +66,7 @@
             { tag: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", view: "20,000", pts: "30" },
             { tag: "#RoV #rovth #เล่นRoV", view: "20,000", pts: "30" },
             { tag: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", view: "20,000", pts: "30" },
-            { tag: "#RoV #rovth #RoVThailand", view: "20,000", pts: "30", note: "แท็กซ้ำ ไว้ลงหลังสุด" }, // รายการที่ 14 รูปแบบเดียวกับ 15
+            { tag: "#RoV #rovth #RoVThailand", view: "20,000", pts: "30", note: "แท็กซ้ำ ไว้ลงหลังสุด" }, 
             { tag: "#RoV #rovth #คลิปRoV", view: "15,000", pts: "30", note: "คลิปบัคเพิ่มคลิปในภารกิจได้แล้วค่อยปั้มวิว" }
         ];
 
@@ -80,10 +80,8 @@
                 div.className = `ultra-card w-full p-5 rounded-xl flex items-center gap-4 cursor-pointer select-none shadow-lg`;
                 
                 div.onclick = () => {
-                    // ถ้ามีหมายเหตุ/สาเหตุ ให้ก๊อปปี้แนบข้อความตามหลังไปด้วย
-                    const textToCopy = item.note 
-                        ? `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view}) [สาเหตุ: ${item.note}]`
-                        : `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view})`;
+                    // ลบเงื่อนไขการใส่สาเหตุออก เพื่อให้ได้ข้อความฟอร์แมตปกติเหมือนกันทุกช่องเวลาคัดลอก
+                    const textToCopy = `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view})`;
                     
                     navigator.clipboard.writeText(textToCopy).then(() => {
                         div.classList.add('copied-flash');
