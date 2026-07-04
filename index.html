@@ -52,13 +52,14 @@
     </nav>
 
     <script>
+        // อัปเดตข้อมูลเป็น 17 รายการล่าสุดตามที่คุณระบุ
         const tagData = [
             { tag: "#RoV #คลิปRoV #rovth", view: "10,000", pts: "30" },
             { tag: "#RoV #RoVเป็นเกมตลก #คลิปRoV", view: "10,000", pts: "30" },
             { tag: "#RoV #ทมิฬหอกศักดิ์สิทธิ์ #RoVฮีโร่ใหม่หัวใจไทย #RoVฮีโร่ใหม่ทมิฬ", view: "15,000", pts: "30" },
             { tag: "#RoV #RoVเป็นเกมตลก #rovth", view: "15,000", pts: "30" },
             { tag: "#RoV #RoVเป็นเกมตลก #fpy", view: "15,000", pts: "30" },
-            { tag: "#RoVเป็นเกมตลก #RoV #RoVThailand", view: "20,000", pts: "30" },
+            { tag: "#RoVเป็นเกมตลก #RoV #RoVThailand", view: "20,000", pts: "30", note: "โชว์ช็อตขโมย God Slayer" }, // อัปเดตข้อ 6
             { tag: "#RoV #rovth #RoVThailand", view: "20,000", pts: "30" },
             { tag: "#RoV #rovth #fpy", view: "20,000", pts: "30" },
             { tag: "#RoV #rovth #trending", view: "20,000", pts: "30" },
@@ -66,8 +67,10 @@
             { tag: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", view: "20,000", pts: "30" },
             { tag: "#RoV #rovth #เล่นRoV", view: "20,000", pts: "30" },
             { tag: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", view: "20,000", pts: "30" },
-            { tag: "#RoV #rovth #RoVThailand", view: "20,000", pts: "30", note: "แท็กซ้ำ ไว้ลงหลังสุด" }, 
-            { tag: "#RoV #rovth #คลิปRoV", view: "15,000", pts: "30", note: "คลิปบัคเพิ่มคลิปในภารกิจได้แล้วค่อยปั้มวิว" }
+            { tag: "#RoVเป็นเกมตลก #RoV #RoVThailand", view: "20,000", pts: "30", note: "โชว์ช็อตโหดด้วยวีดีโอจาก Highlight ในเกม" }, // อัปเดตข้อ 14 และเปลี่ยนข้อความโน้ตเก่า
+            { tag: "#RoV #rovth #คลิปRoV", view: "15,000", pts: "30", note: "คลิปบัคเพิ่มคลิปในภารกิจได้แล้วค่อยปั้มวิว" },
+            { tag: "#RoVเป็นเกมตลก #RoV #RoVThailand", view: "20,000", pts: "30", note: "โชว์ขโมยบัพศัตรู" }, // เพิ่มข้อ 16
+            { tag: "#RoV #RoVThailand #RoVล่าการ์ดกลางสยาม #RoVDay2026", view: "20,000", pts: "30" } // เพิ่มข้อ 17
         ];
 
         function render() {
@@ -80,7 +83,6 @@
                 div.className = `ultra-card w-full p-5 rounded-xl flex items-center gap-4 cursor-pointer select-none shadow-lg`;
                 
                 div.onclick = () => {
-                    // ลบเงื่อนไขการใส่สาเหตุออก เพื่อให้ได้ข้อความฟอร์แมตปกติเหมือนกันทุกช่องเวลาคัดลอก
                     const textToCopy = `คลิปที่ ${clipNum}: ${item.tag} (View ${item.view})`;
                     
                     navigator.clipboard.writeText(textToCopy).then(() => {
