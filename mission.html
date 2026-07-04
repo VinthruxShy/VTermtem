@@ -114,7 +114,7 @@
                 <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="clearClips()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
-                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 15</span>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 17</span>
                 </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
@@ -139,13 +139,14 @@
     </nav>
 
     <script>
+        // อัปเดตข้อมูลคลิปครบ 17 รายการล่าสุดตามสเปก (1-2 ทั่วไป / 3-17 VIP) แต้มคงที่ 30 คะแนน
         const clipData = [
-            {v:10, vip:false}, {v:10, vip:false}, 
-            {v:15, vip:true},  {v:15, vip:true},  {v:15, vip:true},  
-            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  
-            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  
-            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  
-            {v:15, vip:true}                                         
+            {v:10, vip:false}, {v:10, vip:false}, // คลิป 1-2 (ทั่วไป)
+            {v:15, vip:true},  {v:15, vip:true},  {v:15, vip:true},  // คลิป 3-5 (VIP)
+            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 6-8 (VIP)
+            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 9-11 (VIP)
+            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 12-14 (VIP)
+            {v:15, vip:true},  {v:20, vip:true},  {v:20, vip:true}   // คลิป 15-17 (VIP)
         ];
         
         const monthlyM = [
@@ -297,6 +298,7 @@
                 const div = document.createElement('div');
                 div.className = `mission-item flex justify-between items-center ${selMissions.has(m.id) ? 'active' : ''}`;
                 div.innerHTML = `<span class="text-[11px] font-bold">${m.name}</span><span class="text-[10px] font-black text-[#FE2C55]">+${m.pts}</span>`;
+                div.innerHTML = `<span class="text-[11px] font-bold">${m.name}</span><span class="text-[10px] font-black text-[#FE2C55]">+${m.pts}</span>`;
                 div.onclick = () => { selMissions.has(m.id) ? selMissions.delete(m.id) : selMissions.add(m.id); renderAll(); };
                 mList.appendChild(div);
             });
@@ -315,7 +317,6 @@
         function runUltraAI() {
             const val = parseInt(document.getElementById('customInput').value) || 0;
             let targetCost = 0;
-            // แก้ไขจุดบัคตัวแปร r100 เป็น c100 ตรงนี้เรียบร้อยแล้วครับ
             for(let c500=0; c500<=2; c500++) {
                 for(let c300=0; c300<=3; c300++) {
                     for(let c100=0; c100<=4; c100++) {
