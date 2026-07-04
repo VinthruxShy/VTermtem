@@ -40,8 +40,8 @@
         <div class="dashboard-box">
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-15)</label>
-                    <input type="number" id="inputAmount" min="0" max="15" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block tracking-widest px-1">เลือกด่วน (1-17)</label>
+                    <input type="number" id="inputAmount" min="0" max="17" oninput="autoSelect()" placeholder="0" class="w-full text-center font-bold text-xl">
                 </div>
                 <div>
                     <label class="text-[10px] text-zinc-500 uppercase font-bold mb-1.5 block text-[#fe2c55] tracking-widest px-1">เรทราคา</label>
@@ -71,7 +71,7 @@
             </div>
 
             <div class="text-center bg-black/50 py-10 rounded-[40px] border border-zinc-800/50 shadow-inner relative">
-                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/15</div>
+                <div id="statBadge" class="absolute top-4 right-6 text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em]">SELECTED: 0/17</div>
                 <div class="mb-8">
                     <div class="text-[11px] text-zinc-500 uppercase font-bold mb-3 tracking-[0.2em]">ยอดรวมสุทธิ (THB)</div>
                     <div class="price-display" id="displayPrice">0.00</div>
@@ -100,7 +100,7 @@
             <div class="flex justify-between items-center mb-8 px-1">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-6 bg-[#fe2c55] rounded-full"></div>
-                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 15 แท็ก</h3>
+                    <h3 class="text-[14px] font-black uppercase tracking-[0.2em] text-white">รายการ 17 แท็ก</h3>
                 </div>
                 <button onclick="resetAll()" class="text-[11px] font-bold text-zinc-600 hover:text-red-500 uppercase">RESET</button>
             </div>
@@ -124,14 +124,14 @@
     </div>
 
     <script>
-        // อัปเดตฐานข้อมูลคลิปใหม่ 15 ชุดตามที่ระบุ ยอดวิวตรงตามจริง แต้มคงที่ 30 คะแนน
+        // อัปเดตฐานข้อมูลคลิปใหม่ทั้งหมดเป็น 17 ชุด เรียงลำดับและแนบข้อความหมายเหตุตรงตามจริง
         const clipDatabase = [
             { id: 1, tags: "#RoV #คลิปRoV #rovth", v: 10000 },
             { id: 2, tags: "#RoV #RoVเป็นเกมตลก #คลิปRoV", v: 10000 },
             { id: 3, tags: "#RoV #ทมิฬหอกศักดิ์สิทธิ์ #RoVฮีโร่ใหม่หัวใจไทย #RoVฮีโร่ใหม่ทมิฬ", v: 15000 },
             { id: 4, tags: "#RoV #RoVเป็นเกมตลก #rovth", v: 15000 },
             { id: 5, tags: "#RoV #RoVเป็นเกมตลก #fpy", v: 15000 },
-            { id: 6, tags: "#RoVเป็นเกมตลก #RoV #RoVThailand", v: 20000 },
+            { id: 6, tags: "#RoVเป็นเกมตลก #RoV #RoVThailand", v: 20000, note: "โชว์ช็อตขโมย God Slayer" },
             { id: 7, tags: "#RoV #rovth #RoVThailand", v: 20000 },
             { id: 8, tags: "#RoV #rovth #fpy", v: 20000 },
             { id: 9, tags: "#RoV #rovth #trending", v: 20000 },
@@ -139,13 +139,15 @@
             { id: 11, tags: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", v: 20000 },
             { id: 12, tags: "#RoV #rovth #เล่นRoV", v: 20000 },
             { id: 13, tags: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", v: 20000 },
-            { id: 14, tags: "#RoV #rovth #RoVThailand", v: 20000 },
-            { id: 15, tags: "#RoV #rovth #คลิปRoV", v: 15000 }
+            { id: 14, tags: "#RoVเป็นเกมตลก #RoV #RoVThailand", v: 20000, note: "โชว์ช็อตโหดด้วยวีดีโอจาก Highlight ในเกม" },
+            { id: 15, tags: "#RoV #rovth #คลิปRoV", v: 15000, note: "คลิปบัคเพิ่มคลิปในภารกิจได้แล้วค่อยปั้มวิว" },
+            { id: 16, tags: "#RoVเป็นเกมตลก #RoV #RoVThailand", v: 20000, note: "โชว์ขโมยบัพศัตรู" },
+            { id: 17, tags: "#RoV #RoVThailand #RoVล่าการ์ดกลางสยาม #RoVDay2026", v: 20000 }
         ];
 
         let selected = [];
 
-        // เงื่อนไขแต้มใหม่: ทุกไอดีได้รับ 30 แต้มเท่ากันทั้งหมด
+        // ทุกไอดีได้รับ 30 แต้มคงที่เท่ากันทั้งหมด
         function getPointsForId(id) {
             return 30;
         }
@@ -162,10 +164,14 @@
                 const div = document.createElement('div');
                 div.className = `clip-card ${isActive ? 'active' : ''}`;
                 div.onclick = () => toggle(item.id);
+                
+                const displayNote = item.note ? `<div class="text-[10px] text-rose-400 font-medium mt-1 italic opacity-80">${item.note}</div>` : '';
+
                 div.innerHTML = `
                     <div class="flex-grow">
                         <div class="text-[12px] font-bold opacity-90 leading-snug select-none">${item.tags}</div>
                         <div class="text-[9px] font-bold mt-1.5 uppercase opacity-60">VIEW: ${item.v.toLocaleString()} • (+${getPointsForId(item.id)} PTS)</div>
+                        ${displayNote}
                     </div>
                     <div class="font-black text-xl ml-4 select-none">${(item.v/1000)}k</div>
                 `;
@@ -185,7 +191,7 @@
 
         function autoSelect() {
             const val = parseInt(document.getElementById('inputAmount').value) || 0;
-            const amount = Math.min(Math.max(val, 0), 15); // จำกัดสูงสุด 15 คลิป
+            const amount = Math.min(Math.max(val, 0), 17); // ปรับระดับเลือกด่วนสูงสุดเป็น 17 คลิป
             selected = [];
             for (let i = 0; i < amount; i++) {
                 selected.push(clipDatabase[i].id);
@@ -234,7 +240,7 @@
 
         function updateUI() {
             render();
-            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/15`; // ปรับเศษแสดงผลสูงสุดเป็น /15
+            document.getElementById('statBadge').innerText = `SELECTED: ${selected.length}/17`; // ปรับเศษสรุปรายงานสูงสุดเป็น /17
             document.getElementById('copyPanel').classList.toggle('hidden', selected.length === 0);
             recalc();
         }
