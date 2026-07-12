@@ -139,10 +139,9 @@
     </nav>
 
     <script>
-        // ลิงก์ดึงข้อมูล CSV จาก Google Sheets
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQLhkH6_H32hlVLnqQbTt_fMuSTfovUJgzhQm_yeTRPew6vwdP59OJQvs10psW_NH6ewOc-42UKNI75/pub?output=csv';
 
-        let clipData = []; // ข้อมูลคลิปที่จะถูกจัดสรรมาจาก Google Sheets
+        let clipData = []; 
         
         const monthlyM = [
             {id:'m1k', name:'สะสมครบ 1,000 วิว', pts:20},
@@ -171,7 +170,6 @@
         let selMissions = new Set();
         let currentGoal = 0;
 
-        // ฟังก์ชันอ่านไฟล์ CSV แบบเสถียร (ป้องกันช่องว่างกวนระบบคั่นคอลัมน์)
         function parseCSV(csvText) {
             const lines = csvText.split('\n');
             const result = [];
@@ -210,7 +208,6 @@
             return result;
         }
 
-        // ฟังก์ชันแปลงข้อมูลตารางโดยฟิกซ์ให้ คลิป 1-2 เป็นทั่วไป และคลิป 3 เป็นต้นไปคือ VIP
         async function fetchSheetData() {
             try {
                 const response = await fetch(SHEET_URL);
@@ -218,16 +215,16 @@
                 const csvText = await response.text();
                 const parsedData = parseCSV(csvText);
                 
-                // แปลงข้อมูลเข้าสู่ clipData อิงตามลำดับแถว (Index)
                 clipData = parsedData.map((item, index) => {
-                    // ลบตัวคั่นคอมมาออกจากยอดวิว (เช่น 20,000 -> 20000) แล้วแปลงหารพันให้เป็นตัวเลขย่อ เช่น 20
                     const rawView = parseInt(item.view.replace(/,/g, '')) || 0;
                     const vNum = Math.floor(rawView / 1000);
                     
-                    // ล็อกเงื่อนไข: 2 คลิปแรก (index 0, 1) เป็นทั่วไป (false) ที่เหลือทั้งหมดเป็น VIP (true)
+                    // ดึงแต้มโดยตรงจากคอลัมน์ pts ใน CSV ถ้าไม่มีค่าให้ default เป็น 30 แต้ม
+                    const ptsNum = parseInt(item.pts) || 30; 
+                    
                     const isVIP = index >= 2;
                                   
-                    return { v: vNum, vip: isVIP };
+                    return { v: vNum, vip: isVIP, pts: ptsNum };
                 });
 
                 document.getElementById('maxClipDisplay').innerText = clipData.length;
@@ -245,7 +242,10 @@
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
-        function getPointsForIdx(idx) { return 30; }
+        // ฟังก์ชันอ่านแต้มเปลี่ยนมาดึงจากข้อมูลของคลิปนั้นๆ ใน Array ที่มาจาก CSV
+        function getPointsForIdx(idx) { 
+            return clipData[idx] ? clipData[idx].pts : 30; 
+        }
 
         function calculatePoints() {
             let base = 0, extra = 0;
