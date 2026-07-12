@@ -53,7 +53,7 @@
         <div class="flex justify-between items-center px-2">
             <div>
                 <h1 class="text-xl font-bold tracking-tighter italic uppercase text-[#FE2C55]">Ultra <span class="text-white">Planner</span></h1>
-                <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Closed-Loop System 2026</p>
+                <p id="statusMessage" class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Loading database...</p>
             </div>
             <button onclick="fullReset()" class="text-[10px] font-black text-zinc-400 bg-zinc-900 border border-white/5 px-4 py-2 rounded-full active:scale-90 transition-all">RESET ALL</button>
         </div>
@@ -114,7 +114,7 @@
                 <h3 class="text-xs font-black text-zinc-400 uppercase italic">Video Selection</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="clearClips()" class="text-[9px] font-bold text-zinc-600 uppercase">Clear</button>
-                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / 17</span>
+                    <span class="text-[10px] font-black text-[#FE2C55] bg-[#FE2C55]/10 px-3 py-1 rounded-full"><span id="clipCountDisplay">0</span> / <span id="maxClipDisplay">0</span></span>
                 </div>
             </div>
             <div id="clipGrid" class="grid grid-cols-4 gap-3"></div>
@@ -139,15 +139,10 @@
     </nav>
 
     <script>
-        // อัปเดตข้อมูลคลิปครบ 17 รายการล่าสุดตามสเปก (1-2 ทั่วไป / 3-17 VIP) แต้มคงที่ 30 คะแนน
-        const clipData = [
-            {v:10, vip:false}, {v:10, vip:false}, // คลิป 1-2 (ทั่วไป)
-            {v:15, vip:true},  {v:15, vip:true},  {v:15, vip:true},  // คลิป 3-5 (VIP)
-            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 6-8 (VIP)
-            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 9-11 (VIP)
-            {v:20, vip:true},  {v:20, vip:true},  {v:20, vip:true},  // คลิป 12-14 (VIP)
-            {v:15, vip:true},  {v:20, vip:true},  {v:20, vip:true}   // คลิป 15-17 (VIP)
-        ];
+        // ลิงก์ดึงข้อมูล CSV จาก Google Sheets
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQLhkH6_H32hlVLnqQbTt_fMuSTfovUJgzhQm_yeTRPew6vwdP59OJQvs10psW_NH6ewOc-42UKNI75/pub?output=csv';
+
+        let clipData = []; // ข้อมูลคลิปที่จะถูกจัดสรรมาจาก Google Sheets
         
         const monthlyM = [
             {id:'m1k', name:'สะสมครบ 1,000 วิว', pts:20},
@@ -176,17 +171,85 @@
         let selMissions = new Set();
         let currentGoal = 0;
 
+        // ฟังก์ชันอ่านไฟล์ CSV แบบเสถียร (ป้องกันช่องว่างกวนระบบคั่นคอลัมน์)
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const result = [];
+            if (lines.length === 0) return result;
+            
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const currentLine = [];
+                let insideQuotes = false;
+                let entry = '';
+                
+                for (let j = 0; j < lines[i].length; j++) {
+                    let char = lines[i][j];
+                    if (char === '"') {
+                        insideQuotes = !insideQuotes;
+                    } else if (char === ',' && !insideQuotes) {
+                        currentLine.push(entry.trim());
+                        entry = '';
+                    } else {
+                        entry += char;
+                    }
+                }
+                currentLine.push(entry.trim());
+                
+                const obj = {};
+                headers.forEach((header, index) => {
+                    let val = currentLine[index] ? currentLine[index] : '';
+                    val = val.replace(/^"|"$/g, '').trim();
+                    obj[header] = val;
+                });
+                result.push(obj);
+            }
+            return result;
+        }
+
+        // ฟังก์ชันแปลงข้อมูลตารางโดยฟิกซ์ให้ คลิป 1-2 เป็นทั่วไป และคลิป 3 เป็นต้นไปคือ VIP
+        async function fetchSheetData() {
+            try {
+                const response = await fetch(SHEET_URL);
+                if (!response.ok) throw new Error('Network error');
+                const csvText = await response.text();
+                const parsedData = parseCSV(csvText);
+                
+                // แปลงข้อมูลเข้าสู่ clipData อิงตามลำดับแถว (Index)
+                clipData = parsedData.map((item, index) => {
+                    // ลบตัวคั่นคอมมาออกจากยอดวิว (เช่น 20,000 -> 20000) แล้วแปลงหารพันให้เป็นตัวเลขย่อ เช่น 20
+                    const rawView = parseInt(item.view.replace(/,/g, '')) || 0;
+                    const vNum = Math.floor(rawView / 1000);
+                    
+                    // ล็อกเงื่อนไข: 2 คลิปแรก (index 0, 1) เป็นทั่วไป (false) ที่เหลือทั้งหมดเป็น VIP (true)
+                    const isVIP = index >= 2;
+                                  
+                    return { v: vNum, vip: isVIP };
+                });
+
+                document.getElementById('maxClipDisplay').innerText = clipData.length;
+                document.getElementById('statusMessage').innerText = 'Closed-Loop System 2026';
+                
+                loadLocalStorageData();
+                renderAll();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('statusMessage').innerText = '❌ Failed to load database';
+            }
+        }
+
         document.getElementById('customInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') { runUltraAI(); e.target.blur(); } });
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
-        function getPointsForIdx(idx) {
-            return 30;
-        }
+        function getPointsForIdx(idx) { return 30; }
 
         function calculatePoints() {
             let base = 0, extra = 0;
-            selClips.forEach(idx => base += getPointsForIdx(idx));
+            selClips.forEach(idx => { if(clipData[idx]) base += getPointsForIdx(idx); });
             monthlyM.forEach(m => { if(selMissions.has(m.id)) base += m.pts; });
             updateM.forEach(u => { if(selMissions.has(u.id)) extra += u.pts; });
             return { base, total: base + extra };
@@ -210,6 +273,7 @@
             let totalViews = 0;
 
             selClips.forEach(idx => { 
+                if(!clipData[idx]) return;
                 if(clipData[idx].vip) {
                     vipCount++; 
                 } else {
@@ -298,7 +362,6 @@
                 const div = document.createElement('div');
                 div.className = `mission-item flex justify-between items-center ${selMissions.has(m.id) ? 'active' : ''}`;
                 div.innerHTML = `<span class="text-[11px] font-bold">${m.name}</span><span class="text-[10px] font-black text-[#FE2C55]">+${m.pts}</span>`;
-                div.innerHTML = `<span class="text-[11px] font-bold">${m.name}</span><span class="text-[10px] font-black text-[#FE2C55]">+${m.pts}</span>`;
                 div.onclick = () => { selMissions.has(m.id) ? selMissions.delete(m.id) : selMissions.add(m.id); renderAll(); };
                 mList.appendChild(div);
             });
@@ -356,14 +419,17 @@
 
         function fullReset() { localStorage.removeItem('rov_ultra_vFinal'); location.reload(); }
         
-        window.onload = () => {
+        function loadLocalStorageData() {
             const s = localStorage.getItem('rov_ultra_vFinal');
             if(s) {
                 const d = JSON.parse(s);
                 selClips = new Set(d.c); selMissions = new Set(d.m); currentGoal = d.g;
                 document.getElementById('customInput').value = currentGoal || '';
             }
-            renderAll();
+        }
+
+        window.onload = () => {
+            fetchSheetData();
         };
     </script>
     <script src="security.js"></script>
