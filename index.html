@@ -28,7 +28,7 @@
     <div class="w-full max-w-md space-y-4 mb-28">
         <header class="text-center py-6 border-b border-gray-900 mb-4">
             <h1 class="text-2xl font-bold tracking-tighter text-white uppercase italic">RoV <span class="text-[#FE2C55]">Tag</span> Deck</h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Tap card to copy tags with clip numbers</p>
+            <p id="statusMessage" class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Loading tags from database...</p>
         </header>
 
         <div id="listContainer" class="grid grid-cols-1"></div>
@@ -52,30 +52,57 @@
     </nav>
 
     <script>
-        // อัปเดตข้อมูลเป็น 17 รายการล่าสุดตามที่คุณระบุ
-        const tagData = [
-            { tag: "#RoV #คลิปRoV #rovth", view: "10,000", pts: "30" },
-            { tag: "#RoV #RoVเป็นเกมตลก #คลิปRoV", view: "10,000", pts: "30" },
-            { tag: "#RoV #ทมิฬหอกศักดิ์สิทธิ์ #RoVฮีโร่ใหม่หัวใจไทย #RoVฮีโร่ใหม่ทมิฬ", view: "15,000", pts: "30" },
-            { tag: "#RoV #RoVเป็นเกมตลก #rovth", view: "15,000", pts: "30" },
-            { tag: "#RoV #RoVเป็นเกมตลก #fpy", view: "15,000", pts: "30" },
-            { tag: "#RoVเป็นเกมตลก #RoV #RoVThailand", view: "20,000", pts: "30", note: "โชว์ช็อตขโมย God Slayer" }, // อัปเดตข้อ 6
-            { tag: "#RoV #rovth #RoVThailand", view: "20,000", pts: "30" },
-            { tag: "#RoV #rovth #fpy", view: "20,000", pts: "30" },
-            { tag: "#RoV #rovth #trending", view: "20,000", pts: "30" },
-            { tag: "#RoV #RoVเป็นเกมตลก #trending", view: "20,000", pts: "30" },
-            { tag: "#RoV #RoVเป็นเกมตลก #เล่นRoV #rovh", view: "20,000", pts: "30" },
-            { tag: "#RoV #rovth #เล่นRoV", view: "20,000", pts: "30" },
-            { tag: "#RoV #RoVเป็นเกมตลก #RoVเกมภาพสวย", view: "20,000", pts: "30" },
-            { tag: "#RoVเป็นเกมตลก #RoV #RoVThailand", view: "20,000", pts: "30", note: "โชว์ช็อตโหดด้วยวีดีโอจาก Highlight ในเกม" }, // อัปเดตข้อ 14 และเปลี่ยนข้อความโน้ตเก่า
-            { tag: "#RoV #rovth #คลิปRoV", view: "15,000", pts: "30", note: "คลิปบัคเพิ่มคลิปในภารกิจได้แล้วค่อยปั้มวิว" },
-            { tag: "#RoVเป็นเกมตลก #RoV #RoVThailand", view: "20,000", pts: "30", note: "โชว์ขโมยบัพศัตรู" }, // เพิ่มข้อ 16
-            { tag: "#RoV #RoVThailand #RoVล่าการ์ดกลางสยาม #RoVDay2026", view: "20,000", pts: "30" } // เพิ่มข้อ 17
-        ];
+        // วางลิงก์ CSV ที่ได้จาก Google Sheets แทนที่ในอัญประกาศด้านล่างนี้
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQLhkH6_H32hlVLnqQbTt_fMuSTfovUJgzhQm_yeTRPew6vwdP59OJQvs10psW_NH6ewOc-42UKNI75/pubhtml';
 
-        function render() {
+        // ฟังก์ชันแปลงข้อมูลจาก CSV string ให้กลายเป็น Array Object
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const result = [];
+            
+            // แถวแรกคือหัวตาราง (tag, view, pts, note)
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue; // ข้ามแถวว่าง
+                
+                // แยกคอมมาโดยคำนึงถึงข้อมูลที่มีเครื่องหมายอัญประกาศคู่ครอบอยู่ (เช่น ตัวเลข 20,000)
+                const currentLine = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+                const obj = {};
+                
+                headers.forEach((header, index) => {
+                    let val = currentLine[index] ? currentLine[index].trim() : '';
+                    // เอาเครื่องหมายคำพูด (") ออกถ้ามี
+                    val = val.replace(/^"|"$/g, '');
+                    obj[header] = val;
+                });
+                
+                result.push(obj);
+            }
+            return result;
+        }
+
+        // ฟังก์ชันดึงข้อมูลจาก Google Sheets
+        async function fetchTagData() {
+            try {
+                const response = await fetch(SHEET_URL);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const csvText = await response.text();
+                const tagData = parseCSV(csvText);
+                
+                render(tagData);
+                document.getElementById('statusMessage').innerText = 'Tap card to copy tags with clip numbers';
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('statusMessage').innerText = '❌ Failed to load data from Sheet';
+            }
+        }
+
+        function render(tagData) {
             const list = document.getElementById('listContainer');
             list.innerHTML = ''; 
+            
             tagData.forEach((item, i) => {
                 const clipNum = String(i + 1).padStart(2, '0');
                 const div = document.createElement('div');
@@ -102,10 +129,10 @@
                     </div>
                     <div class="flex-grow">
                         <div class="text-[12px] text-gray-300 font-medium leading-relaxed">
-                            ${item.tag}
+                            ${item.tag || ''}
                         </div>
                         <div class="text-[9px] text-gray-600 uppercase font-bold mt-1">
-                            VIEW: ${item.view} | ${item.pts} PTS
+                            VIEW: ${item.view || '0'} | ${item.pts || '0'} PTS
                         </div>
                         ${noteHTML}
                     </div>
@@ -113,7 +140,9 @@
                 list.appendChild(div);
             });
         }
-        render();
+
+        // เรียกใช้งานฟังก์ชันดึงข้อมูลเมื่อโหลดหน้าเว็บ
+        fetchTagData();
     </script>
     <script src="security.js"></script>
 </body>
