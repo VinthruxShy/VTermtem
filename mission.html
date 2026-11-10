@@ -219,8 +219,8 @@
                     const rawView = parseInt(item.view.replace(/,/g, '')) || 0;
                     const vNum = Math.floor(rawView / 1000);
                     
-                    // ดึงแต้มโดยตรงจากคอลัมน์ pts ใน CSV ถ้าไม่มีค่าให้ default เป็น 30 แต้ม
-                    const ptsNum = parseInt(item.pts) || 30; 
+                    // ปรับให้เปลี่ยนแต้มทุกคลิปเป็น 38 แต้มเสมอ
+                    const ptsNum = 38; 
                     
                     const isVIP = index >= 2;
                                   
@@ -242,9 +242,9 @@
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
-        // ฟังก์ชันอ่านแต้มเปลี่ยนมาดึงจากข้อมูลของคลิปนั้นๆ ใน Array ที่มาจาก CSV
+        // ปรับเป็น 38 แต้มตามที่ตั้งไว้
         function getPointsForIdx(idx) { 
-            return clipData[idx] ? clipData[idx].pts : 30; 
+            return clipData[idx] ? clipData[idx].pts : 38; 
         }
 
         function calculatePoints() {
@@ -311,7 +311,8 @@
                 for(let c300=0; c300<=3; c300++) {
                     for(let c100=0; c100<=4; c100++) {
                         if((c500*500) + (c300*300) + (c100*100) === currentGoal) {
-                            let cost = (c500*300) + (c300*180) + (c100*70);
+                            // ปรับค่าใช้จ่ายแลกคูปองใหม่ (360, 210, 80)
+                            let cost = (c500*360) + (c300*210) + (c100*80);
                             if(!best || cost < best.cost) best = {c500, c300, c100, cost};
                         }
                     }
@@ -371,6 +372,7 @@
                 const div = document.createElement('div');
                 div.className = `mission-item flex justify-between items-center ${selMissions.has(u.id) ? 'active' : ''}`;
                 div.innerHTML = `<span class="text-[11px] font-bold text-zinc-400">${u.name}</span><span class="text-[10px] font-black text-[#FE2C55]">+${u.pts}</span>`;
+                div.onclick = () => { selMissions.has(u.id) ? selMissions.has(u.id) : selMissions.add(u.id); renderAll(); };
                 div.onclick = () => { selMissions.has(u.id) ? selMissions.delete(u.id) : selMissions.add(u.id); renderAll(); };
                 uList.appendChild(div);
             });
@@ -384,7 +386,8 @@
                 for(let c300=0; c300<=3; c300++) {
                     for(let c100=0; c100<=4; c100++) {
                         if((c500*500)+(c300*300)+(c100*100) === val) {
-                            let cost = (c500*300)+(c300*180)+(c100*70);
+                            // ปรับค่าใช้จ่ายแลกคูปองใหม่ (360, 210, 80)
+                            let cost = (c500*360)+(c300*210)+(c100*80);
                             if(targetCost === 0 || cost < targetCost) targetCost = cost;
                         }
                     }
