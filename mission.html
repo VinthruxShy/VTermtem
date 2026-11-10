@@ -219,7 +219,6 @@
                     const rawView = parseInt(item.view.replace(/,/g, '')) || 0;
                     const vNum = Math.floor(rawView / 1000);
                     
-                    // ดึงแต้มโดยตรงจากคอลัมน์ pts ใน CSV ถ้าไม่มีค่าให้ default เป็น 30 แต้ม เหมือนเดิม
                     const ptsNum = parseInt(item.pts) || 30; 
                     
                     const isVIP = index >= 2;
@@ -242,7 +241,6 @@
 
         function setGoal(v) { document.getElementById('customInput').value = v; runUltraAI(); }
 
-        // ดึงค่าแต้มจาก CSV เหมือนเดิม
         function getPointsForIdx(idx) { 
             return clipData[idx] ? clipData[idx].pts : 30; 
         }
@@ -311,7 +309,6 @@
                 for(let c300=0; c300<=3; c300++) {
                     for(let c100=0; c100<=4; c100++) {
                         if((c500*500) + (c300*300) + (c100*100) === currentGoal) {
-                            // ใช้เรทคูปองใหม่ (360, 210, 80) ตามที่แจ้ง
                             let cost = (c500*360) + (c300*210) + (c100*80);
                             if(!best || cost < best.cost) best = {c500, c300, c100, cost};
                         }
@@ -385,7 +382,6 @@
                 for(let c300=0; c300<=3; c300++) {
                     for(let c100=0; c100<=4; c100++) {
                         if((c500*500)+(c300*300)+(c100*100) === val) {
-                            // ใช้เรทคูปองใหม่ (360, 210, 80) ตามที่แจ้ง
                             let cost = (c500*360)+(c300*210)+(c100*80);
                             if(targetCost === 0 || cost < targetCost) targetCost = cost;
                         }
@@ -413,27 +409,7 @@
         }
 
         function copyUpdateOnly() {
-            let advice = (currentGoal === 1000) 
-                ? "💡 แนะนำให้กดแลก 500 และ 300 ก่อนนะครับ แล้วรอระบบรีช่วง 12-24 ชม. ค่อยกดแลกเพิ่ม 100 อีกสองรอบให้ครบเป้าหมาย"
-                : "💡 แนะนำให้กดแลก 500 จำนวน 2 รอบก่อนนะครับ แล้วรอระบบรีช่วง 12-24 ชม. ค่อยกลับมาแลกอีกครั้งนึง เพราะตอนนี้ภารกิจยังมาไม่ครบ ถ้าแลกแบบนี้เวลาภารกิจมาเพิ่มในอนาคตจะสามารถเก็บได้เพิ่มอีก 300-400 ปอง และใช้แต้มน้อยกว่าครับ";
-            navigator.clipboard.writeText(`สรุปเป้าหมาย ${currentGoal} คูปอง\n\n${advice}\n\nขอบคุณที่ใช้บริการ 🙏`);
-        }
-
-        function fullReset() { localStorage.removeItem('rov_ultra_vFinal'); location.reload(); }
-        
-        function loadLocalStorageData() {
-            const s = localStorage.getItem('rov_ultra_vFinal');
-            if(s) {
-                const d = JSON.parse(s);
-                selClips = new Set(d.c); selMissions = new Set(d.m); currentGoal = d.g;
-                document.getElementById('customInput').value = currentGoal || '';
-            }
-        }
-
-        window.onload = () => {
-            fetchSheetData();
-        };
-    </script>
-    <script src="security.js"></script>
-</body>
-</html>
+            // ดึงสูตรล่าสุดมาแสดงแทนการกำหนดข้อความคงที่
+            const formula = document.getElementById('exchangeList').innerText || "ยังไม่ได้คำนวณเป้าหมาย";
+            
+            let advice = `💡 แนะนำให้กดแลกตามสูตรนี้: [ ${formula} ]\n(หากแต้มในรอบแรกยังไม่พอ ให้ทยอยกดแลกใบใหญ่ก่อน แล้วรอภารกิจระบบรีเซ็ตในช่วง 12-24 ชม. ถัดไป ค่อยกลับมากดแลกส่วนที่เหลือให้ครบเป้าหมายครับ)`;
