@@ -413,3 +413,25 @@
             const formula = document.getElementById('exchangeList').innerText || "ยังไม่ได้คำนวณเป้าหมาย";
             
             let advice = `💡 แนะนำให้กดแลกตามสูตรนี้: [ ${formula} ]\n(หากแต้มในรอบแรกยังไม่พอ ให้ทยอยกดแลกใบใหญ่ก่อน แล้วรอภารกิจระบบรีเซ็ตในช่วง 12-24 ชม. ถัดไป ค่อยกลับมากดแลกส่วนที่เหลือให้ครบเป้าหมายครับ)`;
+            
+            navigator.clipboard.writeText(`🎯 สรุปเป้าหมาย ${currentGoal} คูปอง\n✅ สูตรการแลกคุ้มสุด: ${formula}\n\n${advice}\n\nขอบคุณที่ใช้บริการ 🙏`);
+        }
+
+        function fullReset() { localStorage.removeItem('rov_ultra_vFinal'); location.reload(); }
+        
+        function loadLocalStorageData() {
+            const s = localStorage.getItem('rov_ultra_vFinal');
+            if(s) {
+                const d = JSON.parse(s);
+                selClips = new Set(d.c); selMissions = new Set(d.m); currentGoal = d.g;
+                document.getElementById('customInput').value = currentGoal || '';
+            }
+        }
+
+        window.onload = () => {
+            fetchSheetData();
+        };
+    </script>
+    <script src="security.js"></script>
+</body>
+</html>
